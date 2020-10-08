@@ -1,19 +1,20 @@
 package ru.lanit.oculus.domTree;
 
-import ru.lanit.oculus.domTree.models.directories.withDirectories.BlocksDir;
-import ru.lanit.oculus.domTree.models.directories.withDirectories.ElementsDir;
-import ru.lanit.oculus.domTree.models.directories.withDirectories.RootDir;
+import org.apache.commons.io.IOUtils;
 import ru.lanit.oculus.domTree.models.directories.withDescroption.BlockDir;
 import ru.lanit.oculus.domTree.models.directories.withDescroption.DirectoryWithDescription;
 import ru.lanit.oculus.domTree.models.directories.withDescroption.ElementDir;
 import ru.lanit.oculus.domTree.models.directories.withDescroption.PageDir;
+import ru.lanit.oculus.domTree.models.directories.withDirectories.BlocksDir;
+import ru.lanit.oculus.domTree.models.directories.withDirectories.ElementsDir;
+import ru.lanit.oculus.domTree.models.directories.withDirectories.RootDir;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import org.apache.commons.io.IOUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
