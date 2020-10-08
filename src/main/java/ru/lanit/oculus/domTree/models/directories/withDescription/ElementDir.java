@@ -1,4 +1,4 @@
-package ru.lanit.oculus.domTree.models.directories.withDescroption;
+package ru.lanit.oculus.domTree.models.directories.withDescription;
 
 import ru.lanit.oculus.domTree.GsonUtil;
 import ru.lanit.oculus.domTree.models.json.ElementJson;

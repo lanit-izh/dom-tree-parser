@@ -1,10 +1,10 @@
 package ru.lanit.oculus.domTree;
 
 import org.apache.commons.io.IOUtils;
-import ru.lanit.oculus.domTree.models.directories.withDescroption.BlockDir;
-import ru.lanit.oculus.domTree.models.directories.withDescroption.DirectoryWithDescription;
-import ru.lanit.oculus.domTree.models.directories.withDescroption.ElementDir;
-import ru.lanit.oculus.domTree.models.directories.withDescroption.PageDir;
+import ru.lanit.oculus.domTree.models.directories.withDescription.BlockDir;
+import ru.lanit.oculus.domTree.models.directories.withDescription.DirectoryWithDescription;
+import ru.lanit.oculus.domTree.models.directories.withDescription.ElementDir;
+import ru.lanit.oculus.domTree.models.directories.withDescription.PageDir;
 import ru.lanit.oculus.domTree.models.directories.withDirectories.BlocksDir;
 import ru.lanit.oculus.domTree.models.directories.withDirectories.ElementsDir;
 import ru.lanit.oculus.domTree.models.directories.withDirectories.RootDir;
