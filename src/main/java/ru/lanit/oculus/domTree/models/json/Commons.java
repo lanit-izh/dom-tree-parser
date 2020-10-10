@@ -1,9 +1,9 @@
 package ru.lanit.oculus.domTree.models.json;
 
 import ru.lanit.oculus.domTree.FileUtil;
+import ru.lanit.oculus.domTree.GsonUtil;
 import ru.lanit.oculus.domTree.models.directories.withDescription.BlockDir;
 import ru.lanit.oculus.domTree.models.directories.withDescription.ElementDir;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +43,9 @@ public abstract class Commons extends DefaultJson {
                         .getBlockDirlist()
                         .forEach(blockDir -> {
                             if (blockDir.getBlockJson().getId().equals(block.getId())) {
-                                blockDirs.add(blockDir);
+                                BlockDir commonBlock = GsonUtil.getGson().fromJson(GsonUtil.getGson().toJson(blockDir),BlockDir.class);
+                                commonBlock.setCommon(true);
+                                blockDirs.add(commonBlock);
                             }
                         });
             });
@@ -62,7 +64,9 @@ public abstract class Commons extends DefaultJson {
                         .getElementsDirs()
                         .forEach(elementDir -> {
                             if (elementDir.getElementJson().getId().equals(elementJson.getId())) {
-                                elementDirs.add(elementDir);
+                                ElementDir commonElement = GsonUtil.getGson().fromJson(GsonUtil.getGson().toJson(elementDir),ElementDir.class);
+                                commonElement.setCommon(true);
+                                elementDirs.add(commonElement);
                             }
                         });
             });

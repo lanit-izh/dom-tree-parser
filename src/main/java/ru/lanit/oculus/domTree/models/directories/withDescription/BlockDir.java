@@ -24,14 +24,6 @@ public class BlockDir extends DirectoryWithDescription implements ParentDirector
         setDisplayedName(blockJson.getName());
     }
 
-    public BlockDir(File file, String fileName, boolean isCommon) {
-        super(file, fileName);
-        setChildDir(file);
-        blockJson = GsonUtil.deserializeBlock(getJsonContent(file, fileName));
-        setDisplayedName(blockJson.getName());
-        setCommon(isCommon);
-    }
-
     public boolean isCommon() {
         return isCommon;
     }
