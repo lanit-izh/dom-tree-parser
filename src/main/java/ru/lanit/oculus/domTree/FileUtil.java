@@ -2,19 +2,14 @@ package ru.lanit.oculus.domTree;
 
 import org.apache.commons.io.IOUtils;
 import ru.lanit.oculus.domTree.models.directories.withDescription.BlockDir;
-import ru.lanit.oculus.domTree.models.directories.withDescription.DirectoryWithDescription;
 import ru.lanit.oculus.domTree.models.directories.withDescription.ElementDir;
 import ru.lanit.oculus.domTree.models.directories.withDescription.PageDir;
 import ru.lanit.oculus.domTree.models.directories.withDirectories.BlocksDir;
 import ru.lanit.oculus.domTree.models.directories.withDirectories.ElementsDir;
 import ru.lanit.oculus.domTree.models.directories.withDirectories.RootDir;
-
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,9 +21,14 @@ public class FileUtil {
 
     private static String project_path_string = "your path";
     public static RootDir rootDirectory;
-    public static final String FILE_SEPARATOR = File.separator;
+    public static String FILE_SEPARATOR;
 
     public static void setProjectPath(String path) {
+        if (System.getProperty("os.name").contains("indows")) {
+            FILE_SEPARATOR = "/";
+        } else {
+            FILE_SEPARATOR = "\\";
+        }
         project_path_string = path;
     }
 
@@ -56,7 +56,7 @@ public class FileUtil {
         for (File file : getChildren(directory)) {
             if (file.getName().equals(jsonName + ".json")) {
                 try {
-                    content = IOUtils.toString(new FileReader(file.getPath()));
+                    content = IOUtils.toString(file.toURI(), StandardCharsets.UTF_8);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
