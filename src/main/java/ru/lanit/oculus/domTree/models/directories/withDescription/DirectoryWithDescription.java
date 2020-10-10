@@ -12,6 +12,7 @@ import java.io.File;
 public abstract class DirectoryWithDescription {
 
     private String pathToImage;
+    private String xpath;
 
     public DirectoryWithDescription(File file, String fileName) {
         setPathToImage(file, fileName);
@@ -19,6 +20,14 @@ public abstract class DirectoryWithDescription {
 
     public String getPathToImage() {
         return pathToImage;
+    }
+
+    public String getXpath() {
+        return xpath;
+    }
+
+    public void setXpath(String xpath) {
+        this.xpath = xpath;
     }
 
     /**

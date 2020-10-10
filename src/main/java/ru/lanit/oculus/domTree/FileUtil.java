@@ -35,44 +35,44 @@ public class FileUtil {
     /**
      * Парсит все директории из root-директории
      *
-     * @return      -   файловая иерархия в виде класса RootDir
+     * @return -   файловая иерархия в виде класса RootDir
      */
     public static void setRootDir() {
         String pathToRootDir = project_path_string + FILE_SEPARATOR + Singleton.ROOT_DIR_NAME;
         rootDirectory = new RootDir(new File(pathToRootDir));
-        rootDirectory = addCommonObjectsToDom(rootDirectory);
+        addCommonObjectsToDom(rootDirectory);
+        setXpathForObjects(rootDirectory);
     }
 
     /**
      * Возвращает содержимое json-файла
      *
-     * @param directory     -   директория, содержащая json
-     * @param jsonName      -   название json-файла (без расширения)
-     *
-     * @return              -   содержимое файла
+     * @param directory -   директория, содержащая json
+     * @param jsonName  -   название json-файла (без расширения)
+     * @return -   содержимое файла
      */
     public static String getJsonContent(File directory, String jsonName) {
         String content = "";
-        for (File file: getChildren(directory)) {
+        for (File file : getChildren(directory)) {
             if (file.getName().equals(jsonName + ".json")) {
                 try {
-                    content= IOUtils.toString(new FileReader(file.getPath()));
+                    content = IOUtils.toString(new FileReader(file.getPath()));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-        };
+        }
+        ;
         return content;
     }
 
     /**
      * Парсит директории с элементами
      *
-     * @param parentDir     -   директория, содержащая директории с элементами
-     *
-     * @return              -   лист директорий элементов
+     * @param parentDir -   директория, содержащая директории с элементами
+     * @return -   лист директорий элементов
      */
-    public static List<ElementDir> parseElementsDir (File parentDir) {
+    public static List<ElementDir> parseElementsDir(File parentDir) {
         List<ElementDir> elements = new ArrayList<>();
         for (File file : getChildren(parentDir)) {
             elements.add(new ElementDir(file, Singleton.ELEMENT_FILES_NAME));
@@ -83,11 +83,10 @@ public class FileUtil {
     /**
      * Парсит директории с блоками
      *
-     * @param parentDir     -   директория, содержащая директории с блоками
-     *
-     * @return              -   лист директорий блоков
+     * @param parentDir -   директория, содержащая директории с блоками
+     * @return -   лист директорий блоков
      */
-    public static List<BlockDir> parseBlocksDir (File parentDir) {
+    public static List<BlockDir> parseBlocksDir(File parentDir) {
         List<BlockDir> blocks = new ArrayList<>();
         for (File file : getChildren(parentDir)) {
             blocks.add(new BlockDir(file, Singleton.BLOCK_FILES_NAME));
@@ -98,11 +97,10 @@ public class FileUtil {
     /**
      * Парсит директории со страницами
      *
-     * @param parentDir     -   директория, содержащая директориии со страницами
-     *
-     * @return              -   лист директорий страниц
+     * @param parentDir -   директория, содержащая директориии со страницами
+     * @return -   лист директорий страниц
      */
-    public static List<PageDir> parsePagesDir (File parentDir) {
+    public static List<PageDir> parsePagesDir(File parentDir) {
         List<PageDir> pages = new ArrayList<>();
         for (File file : getChildren(parentDir)) {
             pages.add(new PageDir(file, Singleton.PAGE_FILES_NAME));
@@ -113,9 +111,8 @@ public class FileUtil {
     /**
      * Ищет директорию, которая содержит в себе список элементов
      *
-     * @param parentDir     -   директория для поиска
-     *
-     * @return              -   директория с элементами
+     * @param parentDir -   директория для поиска
+     * @return -   директория с элементами
      */
     public static ElementsDir getElementsDirFromDirectory(File parentDir) {
         ElementsDir elementsDir = null;
@@ -130,20 +127,19 @@ public class FileUtil {
     /**
      * Добавляет общие блоки и элементы из json как виртуальные директории
      *
-     * @param rootDir       -   root-директория
-     *
-     * @return              -   root-директория с добавленными виртуальными общими компонентами
+     * @param rootDir -   root-директория
+     * @return -   root-директория с добавленными виртуальными общими компонентами
      */
-    public static RootDir addCommonObjectsToDom(RootDir rootDir) {
+    private static void addCommonObjectsToDom(RootDir rootDir) {
         rootDir.getPagesDirectory().getPageDirectories().forEach(pageDir -> {
-            if (pageDir.getBlocks() != null ) {
+            if (pageDir.getBlocks() != null) {
                 pageDir
                         .getBlocks()
                         .addCommonBlocks(pageDir.getPageJson().getBlocksFromCommons());
             } else {
                 pageDir.setBlocks(new BlocksDir(pageDir.getPageJson().getBlocksFromCommons()));
             }
-            if (pageDir.getElements() != null ) {
+            if (pageDir.getElements() != null) {
                 pageDir
                         .getElements()
                         .addCommonElements(pageDir.getPageJson().getElementsFromCommons());
@@ -151,15 +147,13 @@ public class FileUtil {
                 pageDir.setElements(new ElementsDir(pageDir.getPageJson().getElementsFromCommons()));
             }
         });
-        return rootDir;
     }
 
     /**
      * Получает изображение из директории
      *
-     * @param directory     -   директория, в которой содержится изображение
-     *
-     * @return              -   изображение
+     * @param directory -   директория, в которой содержится изображение
+     * @return -   изображение
      */
     public static ImageIcon getImage(DirectoryWithDescription directory) {
         BufferedImage myPicture = null;
@@ -174,9 +168,8 @@ public class FileUtil {
     /**
      * Возвращает все вложенные в директорию файлы
      *
-     * @param parentDir     -   родительская директория
-     *
-     * @return              -   вложенные файлы
+     * @param parentDir -   родительская директория
+     * @return -   вложенные файлы
      */
     public static List<File> getChildren(File parentDir) {
         List<File> childrenFiles = new ArrayList<>();
@@ -186,9 +179,31 @@ public class FileUtil {
         return childrenFiles;
     }
 
-    public static void main(String[] args) {
-        setProjectPath("/home/mrsaiw/IdeaProjects/page_object_json_example/");
-        setRootDir();
+    private static void setXpathForObjects(RootDir rootDirectory) {
+        rootDirectory
+                .getPagesDirectory()
+                .getPageDirectories()
+                .forEach(pageDir -> {
+                    String pageName = pageDir.getPageJson().getName();
+                    pageDir.setXpath(pageName);
+                    setXpathForBlocks(pageName, pageDir.getBlocks().getBlockDirlist());
+                    setXpathForElements(pageName, pageDir.getElements().getElementsDirs());
+                });
+    }
+
+    private static void setXpathForBlocks(String prefix, List<BlockDir> blocks) {
+        blocks.forEach(blockDir -> {
+            String blockXpath = String.format(Singleton.XPATH_TEMPLATE, prefix, blockDir.getBlockJson().getName());
+            blockDir.setXpath(blockXpath);
+            setXpathForElements(blockXpath, blockDir.getElementsDir().getElementsDirs());
+        });
+    }
+
+    private static void setXpathForElements(String prefix, List<ElementDir> elements) {
+        elements.forEach(elementDir -> {
+            String elementXpath = String.format(Singleton.XPATH_TEMPLATE, prefix, elementDir.getElementJson().getName());
+            elementDir.setXpath(elementXpath);
+        });
     }
 
 }

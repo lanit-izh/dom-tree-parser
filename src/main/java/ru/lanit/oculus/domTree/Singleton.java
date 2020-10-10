@@ -16,4 +16,7 @@ public class Singleton {
     public static final String ROOT_DIR_NAME = "repo";
     public static final String COMMON_DIR_NAME = "Common";
     public static final String PAGES_DIR_NAME = "Pages";
+
+    //шаблон для формирования xpath
+    public static final String XPATH_TEMPLATE = "%s->%s";
 }
