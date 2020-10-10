@@ -16,6 +16,7 @@ public class CommonDir extends DirectoryWithDirectories {
 
     public CommonDir(File parentDir) {
         super(parentDir);
+        setDisplayedName(Singleton.COMMON_DIR_DISPLAY_NAME);
     }
 
     public BlocksDir getBlocks() {

@@ -1,6 +1,7 @@
 package ru.lanit.oculus.domTree.models.directories.withDirectories;
 
 import ru.lanit.oculus.domTree.FileUtil;
+import ru.lanit.oculus.domTree.Singleton;
 import ru.lanit.oculus.domTree.models.directories.withDescription.ElementDir;
 
 import java.io.File;
@@ -16,10 +17,12 @@ public class ElementsDir extends DirectoryWithDirectories {
 
     public ElementsDir(File parentDir) {
         super(parentDir);
+        setDisplayedName(Singleton.ELEMENTS_DIR_DISPLAY_NAME);
     }
 
     public ElementsDir(List<ElementDir> elementDirs) {
         elementsDirs = elementDirs;
+        setDisplayedName(Singleton.ELEMENTS_DIR_DISPLAY_NAME);
     }
 
     public List<ElementDir> getElementsDirs() {

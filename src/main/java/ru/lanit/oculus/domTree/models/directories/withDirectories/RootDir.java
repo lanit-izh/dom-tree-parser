@@ -15,6 +15,7 @@ public class RootDir extends DirectoryWithDirectories {
 
     public RootDir(File parentDir) {
         super(parentDir);
+        setDisplayedName(Singleton.ROOT_DIR_DISPLAY_NAME);
     }
 
     public CommonDir getCommon() {

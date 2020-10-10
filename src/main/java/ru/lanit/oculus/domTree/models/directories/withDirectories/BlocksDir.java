@@ -1,6 +1,7 @@
 package ru.lanit.oculus.domTree.models.directories.withDirectories;
 
 import ru.lanit.oculus.domTree.FileUtil;
+import ru.lanit.oculus.domTree.Singleton;
 import ru.lanit.oculus.domTree.models.directories.withDescription.BlockDir;
 
 import java.io.File;
@@ -16,10 +17,12 @@ public class BlocksDir extends DirectoryWithDirectories {
 
     public BlocksDir(File parentDir) {
         super(parentDir);
+        setDisplayedName(Singleton.BLOCKS_DIR_DISPLAY_NAME);
     }
 
     public BlocksDir(List<BlockDir> blockDirs) {
         blockDirlist = blockDirs;
+        setDisplayedName(Singleton.BLOCKS_DIR_DISPLAY_NAME);
     }
 
     public List<BlockDir> getBlockDirlist() {

@@ -2,6 +2,7 @@ package ru.lanit.oculus.domTree.models.directories.withDescription;
 
 
 import ru.lanit.oculus.domTree.FileUtil;
+import ru.lanit.oculus.domTree.models.directories.AbstractDirectory;
 
 import java.io.File;
 
@@ -9,7 +10,7 @@ import java.io.File;
  * Абстрактный класс для директорий, которые содержат в себе json-файл с описанием и изображение
  * (могут содержать в себе директории)
  */
-public abstract class DirectoryWithDescription {
+public abstract class DirectoryWithDescription extends AbstractDirectory {
 
     private String pathToImage;
     private String xpath;

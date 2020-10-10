@@ -13,6 +13,7 @@ import java.io.File;
  */
 public class BlockDir extends DirectoryWithDescription implements ParentDirectory {
 
+    private boolean isCommon;
     private ElementsDir elementsDir;
     private BlockJson blockJson;
 
@@ -20,6 +21,23 @@ public class BlockDir extends DirectoryWithDescription implements ParentDirector
         super(file, fileName);
         setChildDir(file);
         blockJson = GsonUtil.deserializeBlock(getJsonContent(file, fileName));
+        setDisplayedName(blockJson.getName());
+    }
+
+    public BlockDir(File file, String fileName, boolean isCommon) {
+        super(file, fileName);
+        setChildDir(file);
+        blockJson = GsonUtil.deserializeBlock(getJsonContent(file, fileName));
+        setDisplayedName(blockJson.getName());
+        setCommon(isCommon);
+    }
+
+    public boolean isCommon() {
+        return isCommon;
+    }
+
+    public void setCommon(boolean common) {
+        isCommon = common;
     }
 
     public ElementsDir getElementsDir() {

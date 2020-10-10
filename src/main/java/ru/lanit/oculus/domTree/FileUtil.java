@@ -184,18 +184,20 @@ public class FileUtil {
                 .getPagesDirectory()
                 .getPageDirectories()
                 .forEach(pageDir -> {
-                    String pageName = pageDir.getPageJson().getName();
-                    pageDir.setXpath(pageName);
-                    setXpathForBlocks(pageName, pageDir.getBlocks().getBlockDirlist());
-                    setXpathForElements(pageName, pageDir.getElements().getElementsDirs());
+                    pageDir.setXpath(pageDir.getDisplayedName());
+                    String blocksPrefix = String.format(Singleton.XPATH_TEMPLATE, pageDir.getDisplayedName(), pageDir.getBlocks().getDisplayedName());
+                    setXpathForBlocks(blocksPrefix, pageDir.getBlocks().getBlockDirlist());
+                    String elementsPrefix = String.format(Singleton.XPATH_TEMPLATE, pageDir.getDisplayedName(), pageDir.getElements().getDisplayedName());
+                    setXpathForElements(elementsPrefix, pageDir.getElements().getElementsDirs());
                 });
     }
 
     private static void setXpathForBlocks(String prefix, List<BlockDir> blocks) {
         blocks.forEach(blockDir -> {
-            String blockXpath = String.format(Singleton.XPATH_TEMPLATE, prefix, blockDir.getBlockJson().getName());
+            String blockXpath = String.format(Singleton.XPATH_TEMPLATE, prefix, blockDir.getDisplayedName());
             blockDir.setXpath(blockXpath);
-            setXpathForElements(blockXpath, blockDir.getElementsDir().getElementsDirs());
+            String blocksPrefix = String.format(Singleton.XPATH_TEMPLATE, blockXpath, Singleton.ELEMENTS_DIR_DISPLAY_NAME);
+            setXpathForElements(blocksPrefix, blockDir.getElementsDir().getElementsDirs());
         });
     }
 
@@ -204,6 +206,12 @@ public class FileUtil {
             String elementXpath = String.format(Singleton.XPATH_TEMPLATE, prefix, elementDir.getElementJson().getName());
             elementDir.setXpath(elementXpath);
         });
+    }
+
+    public static void main(String[] args) {
+        setProjectPath("/home/mrsaiw/IdeaProjects/page_object_json_example/");
+        setRootDir();
+        System.out.println(1);
     }
 
 }

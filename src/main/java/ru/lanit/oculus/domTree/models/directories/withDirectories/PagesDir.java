@@ -1,6 +1,7 @@
 package ru.lanit.oculus.domTree.models.directories.withDirectories;
 
 import ru.lanit.oculus.domTree.FileUtil;
+import ru.lanit.oculus.domTree.Singleton;
 import ru.lanit.oculus.domTree.models.directories.withDescription.PageDir;
 
 import java.io.File;
@@ -16,6 +17,7 @@ public class PagesDir extends DirectoryWithDirectories {
 
     public PagesDir(File parentDir) {
         super(parentDir);
+        setDisplayedName(Singleton.PAGES_DIR_DISPLAY_NAME);
     }
 
     public List<PageDir> getPageDirectories() {

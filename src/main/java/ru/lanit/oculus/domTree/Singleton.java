@@ -17,6 +17,13 @@ public class Singleton {
     public static final String COMMON_DIR_NAME = "Common";
     public static final String PAGES_DIR_NAME = "Pages";
 
+    //отображаемые в xpath названия директорий
+    public static final String BLOCKS_DIR_DISPLAY_NAME = "Блоки";
+    public static final String COMMON_DIR_DISPLAY_NAME = "Общие компоненты";
+    public static final String ELEMENTS_DIR_DISPLAY_NAME = "Элементы";
+    public static final String ROOT_DIR_DISPLAY_NAME = "repo";
+    public static final String PAGES_DIR_DISPLAY_NAME = "Страницы";
+
     //шаблон для формирования xpath
     public static final String XPATH_TEMPLATE = "%s->%s";
 }
