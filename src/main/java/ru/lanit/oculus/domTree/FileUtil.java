@@ -150,22 +150,6 @@ public class FileUtil {
     }
 
     /**
-     * Получает изображение из директории
-     *
-     * @param directory -   директория, в которой содержится изображение
-     * @return -   изображение
-     */
-    public static ImageIcon getImage(DirectoryWithDescription directory) {
-        BufferedImage myPicture = null;
-        try {
-            myPicture = ImageIO.read(new File(directory.getPathToImage()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return new ImageIcon(myPicture);
-    }
-
-    /**
      * Возвращает все вложенные в директорию файлы
      *
      * @param parentDir -   родительская директория
@@ -179,6 +163,11 @@ public class FileUtil {
         return childrenFiles;
     }
 
+    /**
+     * Добавляет к страницам,блокам и элементам xpath'ы
+     *
+     * @param rootDirectory         -   рут-директория
+     */
     private static void setXpathForObjects(RootDir rootDirectory) {
         rootDirectory
                 .getPagesDirectory()
@@ -192,6 +181,13 @@ public class FileUtil {
                 });
     }
 
+    /**
+     * Добавляет к блокам xpath'ы
+     *
+     * @param prefix        -   префикс (xpath парент-объектов: страниц/блоков)
+     * @param blocks        -   лист блоков
+     *
+     */
     private static void setXpathForBlocks(String prefix, List<BlockDir> blocks) {
         blocks.forEach(blockDir -> {
             String blockXpath = String.format(Singleton.XPATH_TEMPLATE, prefix, blockDir.getDisplayedName());
@@ -201,17 +197,18 @@ public class FileUtil {
         });
     }
 
+    /**
+     * Добавляет к элементам xpath'ы
+     *
+     * @param prefix        -   префикс (xpath парент-объектов: страниц/блоков)
+     * @param elements      -   лист элементов
+     *
+     */
     private static void setXpathForElements(String prefix, List<ElementDir> elements) {
         elements.forEach(elementDir -> {
             String elementXpath = String.format(Singleton.XPATH_TEMPLATE, prefix, elementDir.getElementJson().getName());
             elementDir.setXpath(elementXpath);
         });
-    }
-
-    public static void main(String[] args) {
-        setProjectPath("/home/mrsaiw/IdeaProjects/page_object_json_example/");
-        setRootDir();
-        System.out.println(1);
     }
 
 }
