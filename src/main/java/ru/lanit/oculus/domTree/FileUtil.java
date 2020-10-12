@@ -27,7 +27,7 @@ public class FileUtil {
         if (System.getProperty("os.name").contains("indows")) {
             FILE_SEPARATOR = "/";
         } else {
-            FILE_SEPARATOR = "\\";
+            FILE_SEPARATOR = File.separator;
         }
         project_path_string = path;
     }
