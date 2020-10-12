@@ -17,10 +17,10 @@ public class BlockDir extends DirectoryWithDescription implements ParentDirector
     private ElementsDir elementsDir;
     private BlockJson blockJson;
 
-    public BlockDir(File file, String fileName) {
-        super(file, fileName);
+    public BlockDir(File file) {
+        super(file);
         setChildDir(file);
-        blockJson = GsonUtil.deserializeBlock(getJsonContent(file, fileName));
+        blockJson = GsonUtil.deserializeBlock(getJsonContent(file));
         setDisplayedName(blockJson.getName());
     }
 

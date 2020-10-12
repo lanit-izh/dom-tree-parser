@@ -15,8 +15,8 @@ public abstract class DirectoryWithDescription extends AbstractDirectory {
     private String pathToImage;
     private String xpath;
 
-    public DirectoryWithDescription(File file, String fileName) {
-        setPathToImage(file, fileName);
+    public DirectoryWithDescription(File file) {
+        setPathToImage(file);
     }
 
     public String getPathToImage() {
@@ -35,15 +35,20 @@ public abstract class DirectoryWithDescription extends AbstractDirectory {
      * Получает содержание файла-json
      *
      * @param file      -   сама директория (в которой лежит json)
-     * @param fileName  -   название json-файла (без расширения)
      *
      * @return          -   содержание json-на String'ом
      */
-    public String getJsonContent (File file, String fileName) {
-        return FileUtil.getJsonContent(file, fileName);
+    public String getJsonContent (File file) {
+        return FileUtil.getJsonContent(file);
     }
 
-    public void setPathToImage(File file, String fileName) {
-        pathToImage = file.getPath() + FileUtil.FILE_SEPARATOR + fileName + ".png";
+    /**
+     * Устанавливает путь к картинке
+     *
+     * @param file      -   директория с картинкой
+     */
+    public void setPathToImage(File file) {
+        //pathToImage = file.getPath() + FileUtil.FILE_SEPARATOR + fileName + ".png";
+        pathToImage = FileUtil.getFindImageAndGetPath(file);
     }
 }

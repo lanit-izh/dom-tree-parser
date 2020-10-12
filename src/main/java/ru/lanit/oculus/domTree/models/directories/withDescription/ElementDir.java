@@ -13,9 +13,9 @@ public class ElementDir extends DirectoryWithDescription {
     private boolean isCommon;
     private ElementJson elementJson;
 
-    public ElementDir(File file, String fileName) {
-        super(file, fileName);
-        elementJson = GsonUtil.deserializeElement(getJsonContent(file, fileName));
+    public ElementDir(File file) {
+        super(file);
+        elementJson = GsonUtil.deserializeElement(getJsonContent(file));
         setDisplayedName(elementJson.getName());
     }
 

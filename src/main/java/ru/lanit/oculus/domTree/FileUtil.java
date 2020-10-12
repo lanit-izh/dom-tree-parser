@@ -48,22 +48,36 @@ public class FileUtil {
      * Возвращает содержимое json-файла
      *
      * @param directory -   директория, содержащая json
-     * @param jsonName  -   название json-файла (без расширения)
      * @return -   содержимое файла
      */
-    public static String getJsonContent(File directory, String jsonName) {
+    public static String getJsonContent(File directory) {
         String content = "";
+        try {
+            File json = findFileByExtension(directory, "json");
+            content = IOUtils.toString(json.toURI(), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return content;
+    }
+
+    /**
+     * Ищет и возвращает первый найденный файл по расширению
+     *
+     * @param directory     -   директория для поиска
+     * @param extension     -   расширение
+     *
+     * @return              -   найденный файл или null
+     */
+    private static File findFileByExtension(File directory, String extension) {
+        File firstFileWithExtension = null;
         for (File file : getChildren(directory)) {
-            if (file.getName().equals(jsonName + ".json")) {
-                try {
-                    content = IOUtils.toString(file.toURI(), StandardCharsets.UTF_8);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            if (file.getName().contains("." + extension)) {
+                firstFileWithExtension = file;
+                break;
             }
         }
-        ;
-        return content;
+        return firstFileWithExtension;
     }
 
     /**
@@ -75,7 +89,7 @@ public class FileUtil {
     public static List<ElementDir> parseElementsDir(File parentDir) {
         List<ElementDir> elements = new ArrayList<>();
         for (File file : getChildren(parentDir)) {
-            elements.add(new ElementDir(file, Singleton.ELEMENT_FILES_NAME));
+            elements.add(new ElementDir(file));
         }
         return elements;
     }
@@ -89,7 +103,7 @@ public class FileUtil {
     public static List<BlockDir> parseBlocksDir(File parentDir) {
         List<BlockDir> blocks = new ArrayList<>();
         for (File file : getChildren(parentDir)) {
-            blocks.add(new BlockDir(file, Singleton.BLOCK_FILES_NAME));
+            blocks.add(new BlockDir(file));
         }
         return blocks;
     }
@@ -103,7 +117,7 @@ public class FileUtil {
     public static List<PageDir> parsePagesDir(File parentDir) {
         List<PageDir> pages = new ArrayList<>();
         for (File file : getChildren(parentDir)) {
-            pages.add(new PageDir(file, Singleton.PAGE_FILES_NAME));
+            pages.add(new PageDir(file));
         }
         return pages;
     }
@@ -166,7 +180,7 @@ public class FileUtil {
     /**
      * Добавляет к страницам,блокам и элементам xpath'ы
      *
-     * @param rootDirectory         -   рут-директория
+     * @param rootDirectory -   рут-директория
      */
     private static void setXpathForObjects(RootDir rootDirectory) {
         rootDirectory
@@ -184,9 +198,8 @@ public class FileUtil {
     /**
      * Добавляет к блокам xpath'ы
      *
-     * @param prefix        -   префикс (xpath парент-объектов: страниц/блоков)
-     * @param blocks        -   лист блоков
-     *
+     * @param prefix -   префикс (xpath парент-объектов: страниц/блоков)
+     * @param blocks -   лист блоков
      */
     private static void setXpathForBlocks(String prefix, List<BlockDir> blocks) {
         blocks.forEach(blockDir -> {
@@ -200,15 +213,18 @@ public class FileUtil {
     /**
      * Добавляет к элементам xpath'ы
      *
-     * @param prefix        -   префикс (xpath парент-объектов: страниц/блоков)
-     * @param elements      -   лист элементов
-     *
+     * @param prefix   -   префикс (xpath парент-объектов: страниц/блоков)
+     * @param elements -   лист элементов
      */
     private static void setXpathForElements(String prefix, List<ElementDir> elements) {
         elements.forEach(elementDir -> {
             String elementXpath = String.format(Singleton.XPATH_TEMPLATE, prefix, elementDir.getElementJson().getName());
             elementDir.setXpath(elementXpath);
         });
+    }
+
+    public static String getFindImageAndGetPath(File directory) {
+        return findFileByExtension(directory,"png").getPath();
     }
 
 }

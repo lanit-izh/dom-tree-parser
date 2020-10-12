@@ -20,10 +20,10 @@ public class PageDir extends DirectoryWithDescription implements ParentDirectory
     private ElementsDir elements;
     private PageJson pageJson;
 
-    public PageDir(File file, String fileName) {
-        super(file, fileName);
+    public PageDir(File file) {
+        super(file);
         setChildDir(file);
-        pageJson = GsonUtil.deserializePage(getJsonContent(file, fileName));
+        pageJson = GsonUtil.deserializePage(getJsonContent(file));
         setDisplayedName(pageJson.getName());
     }
 
