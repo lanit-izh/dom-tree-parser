@@ -27,7 +27,7 @@ public class FileUtil {
         if (System.getProperty("os.name").contains("indows")) {
             FILE_SEPARATOR = "/";
         } else {
-            FILE_SEPARATOR = "\\";
+            FILE_SEPARATOR = File.separator;
         }
         project_path_string = path;
     }
@@ -209,6 +209,11 @@ public class FileUtil {
             String elementXpath = String.format(Singleton.XPATH_TEMPLATE, prefix, elementDir.getElementJson().getName());
             elementDir.setXpath(elementXpath);
         });
+    }
+
+    public static void main(String[] args) {
+        setProjectPath("/home/mrsaiw/IdeaProjects/page_object_json_example/");
+        setRootDir();
     }
 
 }
