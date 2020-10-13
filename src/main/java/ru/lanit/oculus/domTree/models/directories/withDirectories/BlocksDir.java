@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class BlocksDir extends DirectoryWithDirectories {
 
-    private List<BlockDir> blockDirlist;
+    private List<BlockDir> blocksDirList;
 
     public BlocksDir(File parentDir) {
         super(parentDir);
@@ -21,12 +21,12 @@ public class BlocksDir extends DirectoryWithDirectories {
     }
 
     public BlocksDir(List<BlockDir> blockDirs) {
-        blockDirlist = blockDirs;
+        blocksDirList = blockDirs;
         setDisplayedName(Singleton.BLOCKS_DIR_DISPLAY_NAME);
     }
 
-    public List<BlockDir> getBlockDirlist() {
-        return blockDirlist;
+    public List<BlockDir> getBlocksDirList() {
+        return blocksDirList;
     }
 
     /**
@@ -34,12 +34,12 @@ public class BlocksDir extends DirectoryWithDirectories {
      * @param commonBlocks
      */
     public void addCommonBlocks(List<BlockDir> commonBlocks) {
-        blockDirlist.addAll(commonBlocks);
+        blocksDirList.addAll(commonBlocks);
     }
 
     @Override
     public void setChildDir(File parentDir) {
-        blockDirlist = FileUtil.parseBlocksDir(parentDir);
+        blocksDirList = FileUtil.parseBlocksDir(parentDir);
     }
 
 }

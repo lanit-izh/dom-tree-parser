@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class ElementsDir extends DirectoryWithDirectories {
 
-    private List<ElementDir> elementsDirs;
+    private List<ElementDir> elementsDirList;
 
     public ElementsDir(File parentDir) {
         super(parentDir);
@@ -21,21 +21,21 @@ public class ElementsDir extends DirectoryWithDirectories {
     }
 
     public ElementsDir(List<ElementDir> elementDirs) {
-        elementsDirs = elementDirs;
+        elementsDirList = elementDirs;
         setDisplayedName(Singleton.ELEMENTS_DIR_DISPLAY_NAME);
     }
 
-    public List<ElementDir> getElementsDirs() {
-        return elementsDirs;
+    public List<ElementDir> getElementsDirList() {
+        return elementsDirList;
     }
 
     public void addCommonElements(List<ElementDir> commonElements) {
-        elementsDirs.addAll(commonElements);
+        elementsDirList.addAll(commonElements);
     }
 
     @Override
     public void setChildDir(File parentDir) {
-        elementsDirs = FileUtil.parseElementsDir(parentDir);
+        elementsDirList = FileUtil.parseElementsDir(parentDir);
     }
 
 }

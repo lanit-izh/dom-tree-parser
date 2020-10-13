@@ -145,20 +145,20 @@ public class FileUtil {
      * @return -   root-директория с добавленными виртуальными общими компонентами
      */
     private static void addCommonObjectsToDom(RootDir rootDir) {
-        rootDir.getPagesDirectory().getPageDirectories().forEach(pageDir -> {
-            if (pageDir.getBlocks() != null) {
+        rootDir.getPagesDirectory().getPageDirectoriesList().forEach(pageDir -> {
+            if (pageDir.getBlocksDir() != null) {
                 pageDir
-                        .getBlocks()
+                        .getBlocksDir()
                         .addCommonBlocks(pageDir.getPageJson().getBlocksFromCommons());
             } else {
-                pageDir.setBlocks(new BlocksDir(pageDir.getPageJson().getBlocksFromCommons()));
+                pageDir.setBlocksDir(new BlocksDir(pageDir.getPageJson().getBlocksFromCommons()));
             }
-            if (pageDir.getElements() != null) {
+            if (pageDir.getElementsDir() != null) {
                 pageDir
-                        .getElements()
+                        .getElementsDir()
                         .addCommonElements(pageDir.getPageJson().getElementsFromCommons());
             } else {
-                pageDir.setElements(new ElementsDir(pageDir.getPageJson().getElementsFromCommons()));
+                pageDir.setElementsDir(new ElementsDir(pageDir.getPageJson().getElementsFromCommons()));
             }
         });
     }
@@ -185,13 +185,13 @@ public class FileUtil {
     private static void setXpathForObjects(RootDir rootDirectory) {
         rootDirectory
                 .getPagesDirectory()
-                .getPageDirectories()
+                .getPageDirectoriesList()
                 .forEach(pageDir -> {
                     pageDir.setXpath(pageDir.getDisplayedName());
-                    String blocksPrefix = String.format(Singleton.XPATH_TEMPLATE, pageDir.getDisplayedName(), pageDir.getBlocks().getDisplayedName());
-                    setXpathForBlocks(blocksPrefix, pageDir.getBlocks().getBlockDirlist());
-                    String elementsPrefix = String.format(Singleton.XPATH_TEMPLATE, pageDir.getDisplayedName(), pageDir.getElements().getDisplayedName());
-                    setXpathForElements(elementsPrefix, pageDir.getElements().getElementsDirs());
+                    String blocksPrefix = String.format(Singleton.XPATH_TEMPLATE, pageDir.getDisplayedName(), pageDir.getBlocksDir().getDisplayedName());
+                    setXpathForBlocks(blocksPrefix, pageDir.getBlocksDir().getBlocksDirList());
+                    String elementsPrefix = String.format(Singleton.XPATH_TEMPLATE, pageDir.getDisplayedName(), pageDir.getElementsDir().getDisplayedName());
+                    setXpathForElements(elementsPrefix, pageDir.getElementsDir().getElementsDirList());
                 });
     }
 
@@ -205,8 +205,10 @@ public class FileUtil {
         blocks.forEach(blockDir -> {
             String blockXpath = String.format(Singleton.XPATH_TEMPLATE, prefix, blockDir.getDisplayedName());
             blockDir.setXpath(blockXpath);
-            String blocksPrefix = String.format(Singleton.XPATH_TEMPLATE, blockXpath, Singleton.ELEMENTS_DIR_DISPLAY_NAME);
-            setXpathForElements(blocksPrefix, blockDir.getElementsDir().getElementsDirs());
+            if (blockDir.getElementsDir() != null) {
+                String blocksPrefix = String.format(Singleton.XPATH_TEMPLATE, blockXpath, Singleton.ELEMENTS_DIR_DISPLAY_NAME);
+                setXpathForElements(blocksPrefix, blockDir.getElementsDir().getElementsDirList());
+            }
         });
     }
 

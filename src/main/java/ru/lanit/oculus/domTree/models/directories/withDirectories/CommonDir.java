@@ -11,29 +11,29 @@ import java.io.File;
  */
 public class CommonDir extends DirectoryWithDirectories {
 
-    private BlocksDir blocks;
-    private ElementsDir elements;
+    private BlocksDir blocksDir;
+    private ElementsDir elementsDir;
 
     public CommonDir(File parentDir) {
         super(parentDir);
         setDisplayedName(Singleton.COMMON_DIR_DISPLAY_NAME);
     }
 
-    public BlocksDir getBlocks() {
-        return blocks;
+    public BlocksDir getBlocksDir() {
+        return blocksDir;
     }
 
-    public ElementsDir getElements() {
-        return elements;
+    public ElementsDir getElementsDir() {
+        return elementsDir;
     }
 
     @Override
     public void setChildDir(File parentDir) {
         for (File file : FileUtil.getChildren(parentDir)) {
             if (file.getName().equals(Singleton.BLOCKS_DIR_NAME) && file.isDirectory()) {
-                blocks = new BlocksDir(file);
+                blocksDir = new BlocksDir(file);
             } else if (file.getName().equals(Singleton.ELEMENTS_DIR_NAME) && file.isDirectory()) {
-                elements = new ElementsDir(file);
+                elementsDir = new ElementsDir(file);
             }
         }
     }

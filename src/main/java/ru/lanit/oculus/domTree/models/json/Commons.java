@@ -39,8 +39,8 @@ public abstract class Commons extends DefaultJson {
                 FileUtil
                         .rootDirectory
                         .getCommon()
-                        .getBlocks()
-                        .getBlockDirlist()
+                        .getBlocksDir()
+                        .getBlocksDirList()
                         .forEach(blockDir -> {
                             if (blockDir.getBlockJson().getId().equals(block.getId())) {
                                 BlockDir commonBlock = GsonUtil.getGson().fromJson(GsonUtil.getGson().toJson(blockDir),BlockDir.class);
@@ -60,8 +60,8 @@ public abstract class Commons extends DefaultJson {
                 FileUtil
                         .rootDirectory
                         .getCommon()
-                        .getElements()
-                        .getElementsDirs()
+                        .getElementsDir()
+                        .getElementsDirList()
                         .forEach(elementDir -> {
                             if (elementDir.getElementJson().getId().equals(elementJson.getId())) {
                                 ElementDir commonElement = GsonUtil.getGson().fromJson(GsonUtil.getGson().toJson(elementDir),ElementDir.class);

@@ -13,20 +13,20 @@ import java.util.List;
  */
 public class PagesDir extends DirectoryWithDirectories {
 
-    private List<PageDir> pageDirectories;
+    private List<PageDir> pageDirectoriesList;
 
     public PagesDir(File parentDir) {
         super(parentDir);
         setDisplayedName(Singleton.PAGES_DIR_DISPLAY_NAME);
     }
 
-    public List<PageDir> getPageDirectories() {
-        return pageDirectories;
+    public List<PageDir> getPageDirectoriesList() {
+        return pageDirectoriesList;
     }
 
     @Override
     public void setChildDir(File parentDir)   {
-        pageDirectories = FileUtil.parsePagesDir(parentDir);
+        pageDirectoriesList = FileUtil.parsePagesDir(parentDir);
     }
 
 }

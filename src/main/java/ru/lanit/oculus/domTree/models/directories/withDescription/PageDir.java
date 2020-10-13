@@ -16,8 +16,8 @@ import java.io.File;
  */
 public class PageDir extends DirectoryWithDescription implements ParentDirectory {
 
-    private BlocksDir blocks;
-    private ElementsDir elements;
+    private BlocksDir blocksDir;
+    private ElementsDir elementsDir;
     private PageJson pageJson;
 
     public PageDir(File file) {
@@ -27,12 +27,12 @@ public class PageDir extends DirectoryWithDescription implements ParentDirectory
         setDisplayedName(pageJson.getName());
     }
 
-    public BlocksDir getBlocks() {
-        return blocks;
+    public BlocksDir getBlocksDir() {
+        return blocksDir;
     }
 
-    public ElementsDir getElements() {
-        return elements;
+    public ElementsDir getElementsDir() {
+        return elementsDir;
     }
 
     public PageJson getPageJson() {
@@ -43,21 +43,21 @@ public class PageDir extends DirectoryWithDescription implements ParentDirectory
         this.pageJson = pageJson;
     }
 
-    public void setBlocks(BlocksDir blocks) {
-        this.blocks = blocks;
+    public void setBlocksDir(BlocksDir blocksDir) {
+        this.blocksDir = blocksDir;
     }
 
-    public void setElements(ElementsDir elements) {
-        this.elements = elements;
+    public void setElementsDir(ElementsDir elementsDir) {
+        this.elementsDir = elementsDir;
     }
 
     @Override
     public void setChildDir(File parentDir) {
         for (File file : FileUtil.getChildren(parentDir)) {
             if (file.getName().equals(Singleton.BLOCKS_DIR_NAME) && file.isDirectory()) {
-                blocks = new BlocksDir(file);
+                blocksDir = new BlocksDir(file);
             } else if (file.getName().equals(Singleton.ELEMENTS_DIR_NAME) && file.isDirectory()) {
-                elements = new ElementsDir(file);
+                elementsDir = new ElementsDir(file);
             }
         }
     }
