@@ -48,6 +48,13 @@ public class FileUtil {
      */
     public static void setRootDir(String path) {
         setProjectPath(path);
+        parseRootDir();
+    }
+
+    /**
+     * Парсит рут-директорию и сеттит в поле
+     */
+    public static void parseRootDir() {
         String pathToRootDir = project_path_string + FILE_SEPARATOR + Singleton.ROOT_DIR_NAME;
         rootDirectory = new RootDir(new File(pathToRootDir));
         addCommonObjectsToDom(rootDirectory);
