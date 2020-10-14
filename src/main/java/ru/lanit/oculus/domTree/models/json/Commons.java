@@ -37,7 +37,7 @@ public abstract class Commons extends DefaultJson {
         if (blocks != null) {
             blocks.forEach(block -> {
                 FileUtil
-                        .rootDirectory
+                        .getRootDirectory()
                         .getCommon()
                         .getBlocksDir()
                         .getBlocksDirList()
@@ -58,7 +58,7 @@ public abstract class Commons extends DefaultJson {
         if (elements != null) {
             elements.forEach(elementJson -> {
                 FileUtil
-                        .rootDirectory
+                        .getRootDirectory()
                         .getCommon()
                         .getElementsDir()
                         .getElementsDirList()

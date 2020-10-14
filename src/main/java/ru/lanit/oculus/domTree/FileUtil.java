@@ -20,9 +20,18 @@ import java.util.List;
 public class FileUtil {
 
     private static String project_path_string = "your path";
-    public static RootDir rootDirectory;
+    private static RootDir rootDirectory;
     public static String FILE_SEPARATOR;
 
+    public static RootDir getRootDirectory() {
+        return rootDirectory;
+    }
+
+    /**
+     * Устанавливает путь до директории, которая содержит рут-директорию
+     *
+     * @param path      -   путь
+     */
     public static void setProjectPath(String path) {
         if (System.getProperty("os.name").contains("indows")) {
             FILE_SEPARATOR = "/";
@@ -37,7 +46,8 @@ public class FileUtil {
      *
      * @return -   файловая иерархия в виде класса RootDir
      */
-    public static void setRootDir() {
+    public static void setRootDir(String path) {
+        setProjectPath(path);
         String pathToRootDir = project_path_string + FILE_SEPARATOR + Singleton.ROOT_DIR_NAME;
         rootDirectory = new RootDir(new File(pathToRootDir));
         addCommonObjectsToDom(rootDirectory);
@@ -188,43 +198,53 @@ public class FileUtil {
                 .getPageDirectoriesList()
                 .forEach(pageDir -> {
                     pageDir.setXpath(pageDir.getDisplayedName());
-                    String blocksPrefix = String.format(Singleton.XPATH_TEMPLATE, pageDir.getDisplayedName(), pageDir.getBlocksDir().getDisplayedName());
-                    setXpathForBlocks(blocksPrefix, pageDir.getBlocksDir().getBlocksDirList());
-                    String elementsPrefix = String.format(Singleton.XPATH_TEMPLATE, pageDir.getDisplayedName(), pageDir.getElementsDir().getDisplayedName());
-                    setXpathForElements(elementsPrefix, pageDir.getElementsDir().getElementsDirList());
+                    setXpathForBlocks(pageDir.getDisplayedName(), pageDir.getBlocksDir());
+                    setXpathForElements(pageDir.getDisplayedName(), pageDir.getElementsDir());
                 });
     }
 
     /**
      * Добавляет к блокам xpath'ы
      *
-     * @param prefix -   префикс (xpath парент-объектов: страниц/блоков)
-     * @param blocks -   лист блоков
+     * @param prefix        -   префикс (xpath парент-объектов: страниц/блоков)
+     * @param blocksDir     -   лист с блоками
      */
-    private static void setXpathForBlocks(String prefix, List<BlockDir> blocks) {
-        blocks.forEach(blockDir -> {
-            String blockXpath = String.format(Singleton.XPATH_TEMPLATE, prefix, blockDir.getDisplayedName());
-            blockDir.setXpath(blockXpath);
-            if (blockDir.getElementsDir() != null) {
-                String blocksPrefix = String.format(Singleton.XPATH_TEMPLATE, blockXpath, Singleton.ELEMENTS_DIR_DISPLAY_NAME);
-                setXpathForElements(blocksPrefix, blockDir.getElementsDir().getElementsDirList());
-            }
-        });
+    private static void setXpathForBlocks(String prefix, BlocksDir blocksDir) {
+        if (blocksDir != null) {
+            String blocksPrefix = String.format(Singleton.XPATH_TEMPLATE, prefix,  Singleton.BLOCKS_DIR_DISPLAY_NAME);
+            blocksDir.getBlocksDirList().forEach(blockDir -> {
+                String blockXpath = String.format(Singleton.XPATH_TEMPLATE, blocksPrefix, blockDir.getDisplayedName());
+                blockDir.setXpath(blockXpath);
+                setXpathForBlocks(blockXpath, blockDir.getBlocksDir());
+                setXpathForElements(blockXpath, blockDir.getElementsDir());
+            });
+        }
+
     }
 
     /**
      * Добавляет к элементам xpath'ы
      *
-     * @param prefix   -   префикс (xpath парент-объектов: страниц/блоков)
-     * @param elements -   лист элементов
+     * @param prefix        -   префикс (xpath парент-объектов: страниц/блоков)
+     * @param elementsDir   -   директорий с элементами
      */
-    private static void setXpathForElements(String prefix, List<ElementDir> elements) {
-        elements.forEach(elementDir -> {
-            String elementXpath = String.format(Singleton.XPATH_TEMPLATE, prefix, elementDir.getElementJson().getName());
-            elementDir.setXpath(elementXpath);
-        });
+    private static void setXpathForElements(String prefix, ElementsDir elementsDir) {
+        if (elementsDir != null) {
+            String elementsPrefix = String.format(Singleton.XPATH_TEMPLATE, prefix, Singleton.ELEMENTS_DIR_DISPLAY_NAME);
+            elementsDir.getElementsDirList().forEach(elementDir -> {
+                String elementXpath = String.format(Singleton.XPATH_TEMPLATE, elementsPrefix, elementDir.getElementJson().getName());
+                elementDir.setXpath(elementXpath);
+            });
+        }
     }
 
+    /**
+     * Ищет в директории png-изображение
+     *
+     * @param directory     -   директория
+     *
+     * @return              -   путь до изображения
+     */
     public static String getFindImageAndGetPath(File directory) {
         return findFileByExtension(directory,"png").getPath();
     }
