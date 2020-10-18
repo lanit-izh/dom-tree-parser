@@ -1,18 +1,23 @@
 package ru.lanit.oculus.domTree;
 
 import org.apache.commons.io.IOUtils;
+import ru.lanit.oculus.domTree.models.directories.elementTypes.ElementType;
+import ru.lanit.oculus.domTree.models.directories.elementTypes.PropertiesDirectory;
 import ru.lanit.oculus.domTree.models.directories.withDescription.BlockDir;
 import ru.lanit.oculus.domTree.models.directories.withDescription.ElementDir;
 import ru.lanit.oculus.domTree.models.directories.withDescription.PageDir;
 import ru.lanit.oculus.domTree.models.directories.withDirectories.BlocksDir;
 import ru.lanit.oculus.domTree.models.directories.withDirectories.ElementsDir;
+import ru.lanit.oculus.domTree.models.directories.withDirectories.PagesDir;
 import ru.lanit.oculus.domTree.models.directories.withDirectories.RootDir;
+import ru.lanit.oculus.domTree.models.json.BlockJson;
+import ru.lanit.oculus.domTree.models.json.ElementJson;
+import ru.lanit.oculus.domTree.models.json.PropertyJson;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Утиль для работы с файлами проекта
@@ -30,7 +35,7 @@ public class FileUtil {
     /**
      * Устанавливает путь до директории, которая содержит рут-директорию
      *
-     * @param path      -   путь
+     * @param path -   путь
      */
     public static void setProjectPath(String path) {
         if (System.getProperty("os.name").contains("indows")) {
@@ -59,6 +64,7 @@ public class FileUtil {
         rootDirectory = new RootDir(new File(pathToRootDir));
         addCommonObjectsToDom(rootDirectory);
         setXpathForObjects(rootDirectory);
+        setPropsForPages(rootDirectory.getPagesDirectory());
     }
 
     /**
@@ -81,15 +87,25 @@ public class FileUtil {
     /**
      * Ищет и возвращает первый найденный файл по расширению
      *
-     * @param directory     -   директория для поиска
-     * @param extension     -   расширение
-     *
-     * @return              -   найденный файл или null
+     * @param directory -   директория для поиска
+     * @param extension -   расширение
+     * @return -   найденный файл или null
      */
     private static File findFileByExtension(File directory, String extension) {
+        return findFileByFullName(directory, null, extension);
+    }
+
+    /**
+     * @param directory
+     * @param fileName
+     * @param extension
+     * @return
+     */
+    private static File findFileByFullName(File directory, String fileName, String extension) {
         File firstFileWithExtension = null;
         for (File file : getChildren(directory)) {
-            if (file.getName().contains("." + extension)) {
+            System.out.println(file.getName());
+            if ((fileName != null && file.getName().equals(fileName + "." + extension)) || (fileName == null && file.getName().contains("." + extension))) {
                 firstFileWithExtension = file;
                 break;
             }
@@ -213,12 +229,12 @@ public class FileUtil {
     /**
      * Добавляет к блокам xpath'ы
      *
-     * @param prefix        -   префикс (xpath парент-объектов: страниц/блоков)
-     * @param blocksDir     -   лист с блоками
+     * @param prefix    -   префикс (xpath парент-объектов: страниц/блоков)
+     * @param blocksDir -   лист с блоками
      */
     private static void setXpathForBlocks(String prefix, BlocksDir blocksDir) {
         if (blocksDir != null) {
-            String blocksPrefix = String.format(Singleton.XPATH_TEMPLATE, prefix,  Singleton.BLOCKS_DIR_DISPLAY_NAME);
+            String blocksPrefix = String.format(Singleton.XPATH_TEMPLATE, prefix, Singleton.BLOCKS_DIR_DISPLAY_NAME);
             blocksDir.getBlocksDirList().forEach(blockDir -> {
                 String blockXpath = String.format(Singleton.XPATH_TEMPLATE, blocksPrefix, blockDir.getDisplayedName());
                 blockDir.setXpath(blockXpath);
@@ -232,8 +248,8 @@ public class FileUtil {
     /**
      * Добавляет к элементам xpath'ы
      *
-     * @param prefix        -   префикс (xpath парент-объектов: страниц/блоков)
-     * @param elementsDir   -   директорий с элементами
+     * @param prefix      -   префикс (xpath парент-объектов: страниц/блоков)
+     * @param elementsDir -   директорий с элементами
      */
     private static void setXpathForElements(String prefix, ElementsDir elementsDir) {
         if (elementsDir != null) {
@@ -245,15 +261,106 @@ public class FileUtil {
         }
     }
 
+    private static void setPropsForPages(PagesDir pages) {
+        pages
+                .getPageDirectoriesList()
+                .forEach(page -> {
+                    page
+                            .getBlocksDir()
+                            .getBlocksDirList()
+                            .forEach(FileUtil::setPropsForBlock);
+                    page
+                            .getElementsDir()
+                            .getElementsDirList()
+                            .forEach(FileUtil::setPropsForElement);
+                });
+    }
+
+    private static void setPropsForBlock(BlockDir block) {
+        BlockJson json = block.getBlockJson();
+        if (json.getType() != null && json.getProperties() != null) {
+            block.setProps(new PropertiesDirectory(initAndOverrideProps(json.getType(), json.getProperties(), block.getAbsolutePathToDir())));
+        } else if (json.getType() != null) {
+            ElementType commonType = rootDirectory
+                    .getElementTypesDirectory()
+                    .getElementTypeByTypeName(json.getType());
+            block.setProps(commonType.getProps());
+        }
+        if (block.getBlocksDir() != null) {
+            block
+                    .getBlocksDir()
+                    .getBlocksDirList()
+                    .forEach(FileUtil::setPropsForBlock);
+        }
+        if (block.getElementsDir() != null) {
+            block
+                    .getElementsDir()
+                    .getElementsDirList()
+                    .forEach(FileUtil::setPropsForElement);
+        }
+    }
+
+    private static void setPropsForElement(ElementDir element) {
+        ElementJson json = element.getElementJson();
+        if (json.getType() != null && json.getProperties() != null) {
+            element.setProps(new PropertiesDirectory(initAndOverrideProps(json.getType(), json.getProperties(), element.getAbsolutePathToDir())));
+        } else if (json.getType() != null) {
+            ElementType commonType = rootDirectory
+                    .getElementTypesDirectory()
+                    .getElementTypeByTypeName(json.getType());
+            element.setProps(commonType.getProps());
+        }
+    }
+
+    private static Map<String, String> initAndOverrideProps(String typeName, List<PropertyJson> jsonProps, String directoryPath) {
+        Map<String, String> overrideProps = new HashMap<String, String>();
+        Map<String, String> defaultProps = rootDirectory
+                .getElementTypesDirectory()
+                .getElementTypeByTypeName(typeName)
+                .getProps()
+                .getProperties();
+        File propsDirectory = FileUtil.findDirectoryByName(new File(directoryPath), Singleton.PROPS_DIR_NAME);
+        defaultProps.forEach((property, imagePath) -> {
+            boolean isNeedToOverride = false;
+            String imageName = imagePath;
+            for (PropertyJson jsonProp : jsonProps) {
+                if (jsonProp.getName().equals(property)) {
+                    isNeedToOverride = true;
+                    imageName = jsonProp.getImageName();
+                }
+            }
+            if (isNeedToOverride) {
+                File image = findFileByFullName(propsDirectory, imageName, "png");
+                overrideProps.put(property, image.getAbsolutePath());
+            } else {
+                overrideProps.put(property, imagePath);
+            }
+        });
+        return overrideProps;
+    }
+
     /**
      * Ищет в директории png-изображение
      *
-     * @param directory     -   директория
-     *
-     * @return              -   путь до изображения
+     * @param directory -   директория
+     * @return -   путь до изображения
      */
-    public static String getFindImageAndGetPath(File directory) {
-        return findFileByExtension(directory,"png").getPath();
+    public static String findImageAndGetPath(File directory) {
+        return findFileByExtension(directory, "png").getPath();
+    }
+
+    public static File findDirectoryByName(File parentDir, String dirName) {
+        File directory = null;
+        for (File file : getChildren(parentDir)) {
+            if (file.getName().equals(dirName) && file.isDirectory())
+                directory = file;
+        }
+        return directory;
+    }
+
+    public static void main(String[] args) {
+        setRootDir("/home/mrsaiw/IdeaProjects/repo-sample/");
+        System.out.println("получилось");
     }
 
 }

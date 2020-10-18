@@ -1,6 +1,7 @@
 package ru.lanit.oculus.domTree.models.directories.withDescription;
 
 import ru.lanit.oculus.domTree.GsonUtil;
+import ru.lanit.oculus.domTree.models.directories.elementTypes.PropertiesDirectory;
 import ru.lanit.oculus.domTree.models.json.ElementJson;
 
 import java.io.File;
@@ -12,11 +13,13 @@ public class ElementDir extends DirectoryWithDescription {
 
     private boolean isCommon;
     private ElementJson elementJson;
+    private PropertiesDirectory props;
 
     public ElementDir(File file) {
         super(file);
         elementJson = GsonUtil.deserializeElement(getJsonContent(file));
         setDisplayedName(elementJson.getName());
+        setAbsolutePathToDir(file);
     }
 
     public boolean isCommon() {
@@ -35,4 +38,11 @@ public class ElementDir extends DirectoryWithDescription {
         this.elementJson = elementJson;
     }
 
+    public PropertiesDirectory getProps() {
+        return props;
+    }
+
+    public void setProps(PropertiesDirectory props) {
+        this.props = props;
+    }
 }
