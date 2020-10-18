@@ -1,6 +1,7 @@
 package ru.lanit.oculus.domTree;
 
 import org.apache.commons.io.IOUtils;
+import ru.lanit.oculus.domTree.models.Property;
 import ru.lanit.oculus.domTree.models.directories.elementTypes.ElementType;
 import ru.lanit.oculus.domTree.models.directories.elementTypes.PropertiesDirectory;
 import ru.lanit.oculus.domTree.models.directories.withDescription.BlockDir;
@@ -63,8 +64,8 @@ public class FileUtil {
         String pathToRootDir = project_path_string + FILE_SEPARATOR + Singleton.ROOT_DIR_NAME;
         rootDirectory = new RootDir(new File(pathToRootDir));
         addCommonObjectsToDom(rootDirectory);
-        setXpathForObjects(rootDirectory);
         setPropsForPages(rootDirectory.getPagesDirectory());
+        setXpathForObjects(rootDirectory);
     }
 
     /**
@@ -104,7 +105,6 @@ public class FileUtil {
     private static File findFileByFullName(File directory, String fileName, String extension) {
         File firstFileWithExtension = null;
         for (File file : getChildren(directory)) {
-            System.out.println(file.getName());
             if ((fileName != null && file.getName().equals(fileName + "." + extension)) || (fileName == null && file.getName().contains("." + extension))) {
                 firstFileWithExtension = file;
                 break;
@@ -240,6 +240,7 @@ public class FileUtil {
                 blockDir.setXpath(blockXpath);
                 setXpathForBlocks(blockXpath, blockDir.getBlocksDir());
                 setXpathForElements(blockXpath, blockDir.getElementsDir());
+                setXpathForProps(blockXpath, blockDir.getProps());
             });
         }
 
@@ -257,6 +258,17 @@ public class FileUtil {
             elementsDir.getElementsDirList().forEach(elementDir -> {
                 String elementXpath = String.format(Singleton.XPATH_TEMPLATE, elementsPrefix, elementDir.getElementJson().getName());
                 elementDir.setXpath(elementXpath);
+                setXpathForProps(elementXpath, elementDir.getProps());
+            });
+        }
+    }
+
+    private static void setXpathForProps(String prefix, PropertiesDirectory propertiesDirectory) {
+        if (propertiesDirectory != null) {
+            String propertiesPrefix = String.format(Singleton.XPATH_TEMPLATE, prefix, Singleton.PROPERTIES_DIR_DISPLAY_NAME);
+            propertiesDirectory.getProperties().forEach(property -> {
+                String propertyXpath = String.format(Singleton.XPATH_TEMPLATE, propertiesPrefix, property.getName());
+                property.setXpath(propertyXpath);
             });
         }
     }
@@ -312,28 +324,28 @@ public class FileUtil {
         }
     }
 
-    private static Map<String, String> initAndOverrideProps(String typeName, List<PropertyJson> jsonProps, String directoryPath) {
-        Map<String, String> overrideProps = new HashMap<String, String>();
-        Map<String, String> defaultProps = rootDirectory
+    private static List<Property> initAndOverrideProps(String typeName, List<PropertyJson> jsonProps, String directoryPath) {
+        List<Property> overrideProps = new ArrayList<>();
+        List<Property> defaultProps = rootDirectory
                 .getElementTypesDirectory()
                 .getElementTypeByTypeName(typeName)
                 .getProps()
                 .getProperties();
         File propsDirectory = FileUtil.findDirectoryByName(new File(directoryPath), Singleton.PROPS_DIR_NAME);
-        defaultProps.forEach((property, imagePath) -> {
+        defaultProps.forEach(property -> {
             boolean isNeedToOverride = false;
-            String imageName = imagePath;
+            String imageName = property.getPathToImage();
             for (PropertyJson jsonProp : jsonProps) {
-                if (jsonProp.getName().equals(property)) {
+                if (jsonProp.getName().equals(property.getName())) {
                     isNeedToOverride = true;
                     imageName = jsonProp.getImageName();
                 }
             }
             if (isNeedToOverride) {
                 File image = findFileByFullName(propsDirectory, imageName, "png");
-                overrideProps.put(property, image.getAbsolutePath());
+                overrideProps.add(new Property(property.getName(), image.getAbsolutePath()));
             } else {
-                overrideProps.put(property, imagePath);
+                overrideProps.add(new Property(property.getName(), imageName));
             }
         });
         return overrideProps;

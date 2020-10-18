@@ -3,11 +3,14 @@ package ru.lanit.oculus.domTree.models.directories.elementTypes;
 import ru.lanit.oculus.domTree.FileUtil;
 import ru.lanit.oculus.domTree.GsonUtil;
 import ru.lanit.oculus.domTree.Singleton;
+import ru.lanit.oculus.domTree.models.Property;
 import ru.lanit.oculus.domTree.models.directories.AbstractDirectory;
 import ru.lanit.oculus.domTree.models.directories.ContainsJson;
 import ru.lanit.oculus.domTree.models.json.TypeJson;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ElementType extends AbstractDirectory implements ContainsJson {
@@ -37,7 +40,7 @@ public class ElementType extends AbstractDirectory implements ContainsJson {
         this.props = props;
     }
 
-    private Map<String, String> initProps(File directory) throws Exception {
+    private List<Property> initProps(File directory) throws Exception {
         if (typeJson.getProperties() != null) {
             int jsonPropsCount = typeJson.getProperties().size();
             File propsDirectory = FileUtil.findDirectoryByName(directory, Singleton.PROPS_DIR_NAME);
@@ -48,12 +51,11 @@ public class ElementType extends AbstractDirectory implements ContainsJson {
             if (jsonPropsCount != imagePropsCount) {
                 throw new Exception("Ошибка");
             }
-            Map<String, String> props = new HashMap<>();
-            String imageExtension = ".png";
+            List<Property> props = new ArrayList<>();
             typeJson.getProperties().forEach(prop -> {
                 FileUtil.getChildren(propsDirectory).forEach(image -> {
-                    if (image.getName().equals(prop.getImageName() + imageExtension)) {
-                        props.put(prop.getName(), image.getAbsolutePath());
+                    if (image.getName().equals(prop.getImageName() + ".png")) {
+                        props.add(new Property(prop.getName(), image.getAbsolutePath()));
                     }
                 });
             });
