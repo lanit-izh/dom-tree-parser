@@ -2,9 +2,7 @@ package ru.lanit.oculus.domTree;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import ru.lanit.oculus.domTree.models.json.BlockJson;
-import ru.lanit.oculus.domTree.models.json.ElementJson;
-import ru.lanit.oculus.domTree.models.json.PageJson;
+import ru.lanit.oculus.domTree.models.json.*;
 
 /**
  * Утиль для сериализации/десериализации объектов/json с помощью Gson
@@ -55,4 +53,11 @@ public class GsonUtil {
         return getGson().fromJson(json, BlockJson.class);
     }
 
+    public static TypeJson deserializeType(String json) {
+        return getGson().fromJson(json, TypeJson.class);
+    }
+
+    public static ElementTypesJson deserializeTypes(String json) {
+        return getGson().fromJson(json, ElementTypesJson.class);
+    }
 }
