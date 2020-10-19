@@ -267,7 +267,7 @@ public class FileUtil {
         if (propertiesDirectory != null) {
             String propertiesPrefix = String.format(Singleton.XPATH_TEMPLATE, prefix, Singleton.PROPERTIES_DIR_DISPLAY_NAME);
             propertiesDirectory.getProperties().forEach(property -> {
-                String propertyXpath = String.format(Singleton.XPATH_TEMPLATE, propertiesPrefix, property.getName());
+                String propertyXpath = String.format(Singleton.XPATH_TEMPLATE, propertiesPrefix, property.getDisplayedName());
                 property.setXpath(propertyXpath);
             });
         }
@@ -336,16 +336,16 @@ public class FileUtil {
             boolean isNeedToOverride = false;
             String imageName = property.getPathToImage();
             for (PropertyJson jsonProp : jsonProps) {
-                if (jsonProp.getName().equals(property.getName())) {
+                if (jsonProp.getName().equals(property.getDisplayedName())) {
                     isNeedToOverride = true;
                     imageName = jsonProp.getImageName();
                 }
             }
             if (isNeedToOverride) {
                 File image = findFileByFullName(propsDirectory, imageName, "png");
-                overrideProps.add(new Property(property.getName(), image.getAbsolutePath()));
+                overrideProps.add(new Property(property.getDisplayedName(), image.getAbsolutePath()));
             } else {
-                overrideProps.add(new Property(property.getName(), imageName));
+                overrideProps.add(new Property(property.getDisplayedName(), imageName));
             }
         });
         return overrideProps;
@@ -368,11 +368,6 @@ public class FileUtil {
                 directory = file;
         }
         return directory;
-    }
-
-    public static void main(String[] args) {
-        setRootDir("/home/mrsaiw/IdeaProjects/repo-sample/");
-        System.out.println("получилось");
     }
 
 }

@@ -1,22 +1,15 @@
 package ru.lanit.oculus.domTree.models;
 
-public class Property {
+import ru.lanit.oculus.domTree.models.directories.AbstractDirectory;
 
-    private String name;
+public class Property extends AbstractDirectory {
+
     private String pathToImage;
     private String xpath;
 
     public Property(String name, String pathToImage) {
-        this.name = name;
+        setDisplayedName(name);
         this.pathToImage = pathToImage;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getPathToImage() {
