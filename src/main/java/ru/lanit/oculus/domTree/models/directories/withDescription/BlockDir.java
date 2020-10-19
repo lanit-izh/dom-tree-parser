@@ -4,6 +4,7 @@ import ru.lanit.oculus.domTree.FileUtil;
 import ru.lanit.oculus.domTree.GsonUtil;
 import ru.lanit.oculus.domTree.Singleton;
 import ru.lanit.oculus.domTree.models.directories.ParentDirectory;
+import ru.lanit.oculus.domTree.models.directories.elementTypes.PropertiesDirectory;
 import ru.lanit.oculus.domTree.models.directories.withDirectories.BlocksDir;
 import ru.lanit.oculus.domTree.models.directories.withDirectories.ElementsDir;
 import ru.lanit.oculus.domTree.models.json.BlockJson;
@@ -19,12 +20,14 @@ public class BlockDir extends DirectoryWithDescription implements ParentDirector
     private ElementsDir elementsDir;
     private BlocksDir blocksDir;
     private BlockJson blockJson;
+    private PropertiesDirectory props;
 
     public BlockDir(File file) {
         super(file);
         setChildDir(file);
         blockJson = GsonUtil.deserializeBlock(getJsonContent(file));
         setDisplayedName(blockJson.getName());
+        setAbsolutePathToDir(file);
     }
 
     public boolean isCommon() {
@@ -57,6 +60,14 @@ public class BlockDir extends DirectoryWithDescription implements ParentDirector
 
     public void setBlockJson(BlockJson blockJson) {
         this.blockJson = blockJson;
+    }
+
+    public PropertiesDirectory getProps() {
+        return props;
+    }
+
+    public void setProps(PropertiesDirectory props) {
+        this.props = props;
     }
 
     @Override

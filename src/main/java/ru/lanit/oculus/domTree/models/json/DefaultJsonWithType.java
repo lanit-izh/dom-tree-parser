@@ -3,9 +3,9 @@ package ru.lanit.oculus.domTree.models.json;
 import java.util.List;
 
 /**
- * Описание json-файла для блоков
+ * Описание общей для всех json-файлов структуры
  */
-public class BlockJson extends Commons {
+public abstract class DefaultJsonWithType extends DefaultJson {
 
     private String type;
 
@@ -26,5 +26,4 @@ public class BlockJson extends Commons {
     public void setProperties(List<PropertyJson> properties) {
         this.properties = properties;
     }
-
 }
