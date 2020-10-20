@@ -2,6 +2,9 @@ package ru.lanit.oculus.domTree.models.json;
 
 import java.util.List;
 
+/**
+ * Описывает json для директории, которая содержит все типы элементов
+ */
 public class ElementTypesJson {
 
     private List<TypeJson> elementTypes;
@@ -13,4 +16,5 @@ public class ElementTypesJson {
     public void setElementTypes(List<TypeJson> elementTypes) {
         this.elementTypes = elementTypes;
     }
+
 }

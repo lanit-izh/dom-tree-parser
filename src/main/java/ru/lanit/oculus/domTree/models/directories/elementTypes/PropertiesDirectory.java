@@ -4,7 +4,6 @@ import ru.lanit.oculus.domTree.Singleton;
 import ru.lanit.oculus.domTree.models.Property;
 import ru.lanit.oculus.domTree.models.directories.AbstractDirectory;
 import java.util.List;
-import java.util.Map;
 
 public class PropertiesDirectory extends AbstractDirectory {
 

@@ -9,16 +9,20 @@ import ru.lanit.oculus.domTree.models.directories.ContainsJson;
 import ru.lanit.oculus.domTree.models.json.TypeJson;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+/**
+ * Описывает тип элемента из директории с типами
+ * Содержит json с описанием типа
+ */
 public class ElementType extends AbstractDirectory implements ContainsJson {
 
+    //json с описанием
     private TypeJson typeJson;
+    //свойства (состояния) типа
     private PropertiesDirectory props;
 
-    public ElementType(File elementTypeDirectory) throws Exception {
+    public ElementType(File elementTypeDirectory) {
         typeJson = GsonUtil.deserializeType(getJsonContent(elementTypeDirectory));
         setDisplayedName(typeJson.getType());
         props = new PropertiesDirectory(initProps(elementTypeDirectory));
@@ -40,16 +44,23 @@ public class ElementType extends AbstractDirectory implements ContainsJson {
         this.props = props;
     }
 
-    private List<Property> initProps(File directory) throws Exception {
+    /**
+     * Задает свойства (состояния) для типа
+     *
+     * @param directory     -   директория типа элемента
+     *
+     * @return              -   список свойств элемента
+     */
+    private List<Property> initProps(File directory) {
         if (typeJson.getProperties() != null) {
             int jsonPropsCount = typeJson.getProperties().size();
             File propsDirectory = FileUtil.findDirectoryByName(directory, Singleton.PROPS_DIR_NAME);
             if (jsonPropsCount > 0 && propsDirectory == null) {
-                throw new Exception("Ошибка");
+                throw new RuntimeException("Ошибка");
             }
             int imagePropsCount = FileUtil.getChildren(propsDirectory).size();
             if (jsonPropsCount != imagePropsCount) {
-                throw new Exception("Ошибка");
+                throw new RuntimeException("Ошибка");
             }
             List<Property> props = new ArrayList<>();
             typeJson.getProperties().forEach(prop -> {
@@ -60,12 +71,12 @@ public class ElementType extends AbstractDirectory implements ContainsJson {
                 });
             });
             if (props.size() != imagePropsCount) {
-                throw new Exception("Ошибка");
+                throw new RuntimeException("Ошибка");
             }
             return props;
         } else {
             if (FileUtil.findDirectoryByName(directory, Singleton.PROPS_DIR_NAME) != null) {
-                throw new Exception("Ошибка");
+                throw new RuntimeException("Ошибка");
             } else {
                 return null;
             }

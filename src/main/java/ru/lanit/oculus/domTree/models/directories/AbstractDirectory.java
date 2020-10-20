@@ -2,6 +2,9 @@ package ru.lanit.oculus.domTree.models.directories;
 
 import java.io.File;
 
+/**
+ * Общий абстрактный класс для всех директорий
+ */
 public abstract class AbstractDirectory {
     /**
      * Отображаемое в плагине название

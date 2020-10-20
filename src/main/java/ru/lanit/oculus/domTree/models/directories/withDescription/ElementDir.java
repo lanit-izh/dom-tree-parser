@@ -11,8 +11,11 @@ import java.io.File;
  */
 public class ElementDir extends DirectoryWithDescription {
 
+    //является ли блок общим
     private boolean isCommon;
+    //json с описанием элемента
     private ElementJson elementJson;
+    //свойства (состояния) элемента
     private PropertiesDirectory props;
 
     public ElementDir(File file) {

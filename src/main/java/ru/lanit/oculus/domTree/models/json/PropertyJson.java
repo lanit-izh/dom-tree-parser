@@ -1,5 +1,8 @@
 package ru.lanit.oculus.domTree.models.json;
 
+/**
+ * Описывает свойство (состояние) типа
+ */
 public class PropertyJson {
 
     private String name;

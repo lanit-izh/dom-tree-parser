@@ -50,7 +50,6 @@ public class FileUtil {
     /**
      * Парсит все директории из root-директории
      *
-     * @return -   файловая иерархия в виде класса RootDir
      */
     public static void setRootDir(String path) {
         setProjectPath(path);
@@ -97,10 +96,13 @@ public class FileUtil {
     }
 
     /**
-     * @param directory
-     * @param fileName
-     * @param extension
-     * @return
+     * Ищет файл по полному названию
+     *
+     * @param directory         -   директория для поиска
+     * @param fileName          -   названия файла (без расширения)
+     * @param extension         -   расширение (без точки)
+     *
+     * @return                  -   найденный файл
      */
     private static File findFileByFullName(File directory, String fileName, String extension) {
         File firstFileWithExtension = null;
@@ -175,7 +177,6 @@ public class FileUtil {
      * Добавляет общие блоки и элементы из json как виртуальные директории
      *
      * @param rootDir -   root-директория
-     * @return -   root-директория с добавленными виртуальными общими компонентами
      */
     private static void addCommonObjectsToDom(RootDir rootDir) {
         rootDir.getPagesDirectory().getPageDirectoriesList().forEach(pageDir -> {
@@ -263,6 +264,12 @@ public class FileUtil {
         }
     }
 
+    /**
+     * Добавляет к свойствам(состояниям) xpath'ы
+     *
+     * @param prefix                -   префикс (xpath парент-объектов: страниц/блоков)
+     * @param propertiesDirectory   -   директория со свойствами
+     */
     private static void setXpathForProps(String prefix, PropertiesDirectory propertiesDirectory) {
         if (propertiesDirectory != null) {
             String propertiesPrefix = String.format(Singleton.XPATH_TEMPLATE, prefix, Singleton.PROPERTIES_DIR_DISPLAY_NAME);
@@ -273,6 +280,11 @@ public class FileUtil {
         }
     }
 
+    /**
+     * Задает свойства для блока
+     *
+     * @param pages       -   директория со страницами
+     */
     private static void setPropsForPages(PagesDir pages) {
         pages
                 .getPageDirectoriesList()
@@ -288,6 +300,11 @@ public class FileUtil {
                 });
     }
 
+    /**
+     * Задает свойства для блока
+     *
+     * @param block       -   директория с блоком
+     */
     private static void setPropsForBlock(BlockDir block) {
         BlockJson json = block.getBlockJson();
         if (json.getType() != null && json.getProperties() != null) {
@@ -312,6 +329,11 @@ public class FileUtil {
         }
     }
 
+    /**
+     * Задает свойства для элемента
+     *
+     * @param element       -   директория с элементом
+     */
     private static void setPropsForElement(ElementDir element) {
         ElementJson json = element.getElementJson();
         if (json.getType() != null && json.getProperties() != null) {
@@ -324,6 +346,16 @@ public class FileUtil {
         }
     }
 
+    /**
+     * Создает и возвращает свойства элемента/блока.
+     * Переопределяет путь до изображения для тех свойств, которые описание в json-файле элемента/блока
+     *
+     * @param typeName              -   тип элемента/блока
+     * @param jsonProps             -   свойства элемента/блока из его json-файла
+     * @param directoryPath         -   путь до директории элемента/блока
+     *
+     * @return                      -   переопределенные свойства
+     */
     private static List<Property> initAndOverrideProps(String typeName, List<PropertyJson> jsonProps, String directoryPath) {
         List<Property> overrideProps = new ArrayList<>();
         List<Property> defaultProps = rootDirectory
@@ -342,6 +374,7 @@ public class FileUtil {
                 }
             }
             if (isNeedToOverride) {
+                //берется изображение из директории блока/элемента
                 File image = findFileByFullName(propsDirectory, imageName, "png");
                 overrideProps.add(new Property(property.getDisplayedName(), image.getAbsolutePath()));
             } else {
@@ -361,6 +394,14 @@ public class FileUtil {
         return findFileByExtension(directory, "png").getPath();
     }
 
+    /**
+     * Ищет директорию по названию
+     *
+     * @param parentDir     -   родительская директория
+     * @param dirName       -   директория для поиска
+     *
+     * @return              -   директория
+     */
     public static File findDirectoryByName(File parentDir, String dirName) {
         File directory = null;
         for (File file : getChildren(parentDir)) {
