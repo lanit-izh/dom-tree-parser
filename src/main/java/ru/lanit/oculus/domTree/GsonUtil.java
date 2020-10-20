@@ -32,7 +32,7 @@ public class GsonUtil {
     }
 
     /**
-     * Десериализует json-файл с опписанием элемента
+     * Десериализует json-файл с описанием элемента
      *
      * @param json      -   содержимое json-файла
      *
@@ -43,7 +43,7 @@ public class GsonUtil {
     }
 
     /**
-     * Десериализует json-файл с опписанием блока
+     * Десериализует json-файл с описанием блока
      *
      * @param json      -   содержимое json-файла
      *
@@ -53,10 +53,24 @@ public class GsonUtil {
         return getGson().fromJson(json, BlockJson.class);
     }
 
+    /**
+     * Десериализует json-файл с описанием типа
+     *
+     * @param json      -   содержимое json-файла
+     *
+     * @return          -   класс-модель, описывающая json
+     */
     public static TypeJson deserializeType(String json) {
         return getGson().fromJson(json, TypeJson.class);
     }
 
+    /**
+     * Десериализует json-файл с описанием типов элементов
+     *
+     * @param json      -   содержимое json-файла
+     *
+     * @return          -   класс-модель, описывающая json
+     */
     public static ElementTypesJson deserializeTypes(String json) {
         return getGson().fromJson(json, ElementTypesJson.class);
     }

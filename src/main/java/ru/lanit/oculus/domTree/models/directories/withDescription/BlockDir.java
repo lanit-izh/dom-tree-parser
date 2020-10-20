@@ -16,10 +16,15 @@ import java.io.File;
  */
 public class BlockDir extends DirectoryWithDescription implements ParentDirectory {
 
+    //является ли блок общим
     private boolean isCommon;
+    //директория с элементами
     private ElementsDir elementsDir;
+    //директория с вложенными блоками
     private BlocksDir blocksDir;
+    //json с описанием блока
     private BlockJson blockJson;
+    //свойства (состояния) блока
     private PropertiesDirectory props;
 
     public BlockDir(File file) {

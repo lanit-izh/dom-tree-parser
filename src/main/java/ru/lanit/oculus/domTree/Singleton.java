@@ -5,9 +5,6 @@ package ru.lanit.oculus.domTree;
  */
 public class Singleton {
 
-    //название файлов
-    public static final String ELEMENT_TYPES_NAME = "elementTypes";
-
     //название директорий в файловой системе
     public static final String BLOCKS_DIR_NAME = "Blocks";
     public static final String ELEMENTS_DIR_NAME = "Elements";

@@ -26,4 +26,5 @@ public abstract class DefaultJsonWithType extends DefaultJson {
     public void setProperties(List<PropertyJson> properties) {
         this.properties = properties;
     }
+
 }

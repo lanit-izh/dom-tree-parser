@@ -4,6 +4,9 @@ import ru.lanit.oculus.domTree.FileUtil;
 
 import java.io.File;
 
+/**
+ * Интерфейс для директорий, которые содержат в себе json
+ */
 public interface ContainsJson {
 
     /**

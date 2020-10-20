@@ -2,9 +2,13 @@ package ru.lanit.oculus.domTree.models.json;
 
 import java.util.List;
 
+/**
+ * Описывает тип элемента
+ */
 public class TypeJson {
 
     private String type;
+    private List<PropertyJson> properties;
 
     public String getType() {
         return type;
@@ -14,8 +18,6 @@ public class TypeJson {
         this.type = type;
     }
 
-    private List<PropertyJson> properties;
-
     public List<PropertyJson> getProperties() {
         return properties;
     }
@@ -23,4 +25,5 @@ public class TypeJson {
     public void setProperties(List<PropertyJson> properties) {
         this.properties = properties;
     }
+
 }
