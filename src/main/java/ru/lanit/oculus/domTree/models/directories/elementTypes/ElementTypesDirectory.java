@@ -4,8 +4,8 @@ import ru.lanit.oculus.domTree.FileUtil;
 import ru.lanit.oculus.domTree.GsonUtil;
 import ru.lanit.oculus.domTree.Singleton;
 import ru.lanit.oculus.domTree.models.directories.AbstractDirectory;
-import ru.lanit.oculus.domTree.models.directories.ContainsJson;
 import ru.lanit.oculus.domTree.models.json.ElementTypesJson;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,15 +13,15 @@ import java.util.List;
 /**
  * Директория с типами элементов и json-файлом с описанием
  */
-public class ElementTypesDirectory extends AbstractDirectory implements ContainsJson {
+public class ElementTypesDirectory extends AbstractDirectory {
 
     //json с описанием
     private ElementTypesJson elementTypesJson;
     //список типов элементов
     private List<ElementType> elementTypeList;
 
-    public ElementTypesDirectory(File directory) throws Exception {
-        elementTypesJson = GsonUtil.deserializeTypes(getJsonContent(directory));
+    public ElementTypesDirectory(File directory) {
+        elementTypesJson = GsonUtil.deserializeTypes(directory);
         elementTypeList = initTypeList(directory);
         setDisplayedName(Singleton.TYPES_DIR_DISPLAY_NAME);
     }
@@ -45,9 +45,8 @@ public class ElementTypesDirectory extends AbstractDirectory implements Contains
     /**
      * Задает список типов элементов по json-файлу и списку директорий с типами
      *
-     * @param typesDir              -   директория с типами
-     *
-     * @return                      -   список типов элементов
+     * @param typesDir -   директория с типами
+     * @return -   список типов элементов
      */
     private List<ElementType> initTypeList(File typesDir) {
         int jsonTypesCount = elementTypesJson
@@ -60,7 +59,7 @@ public class ElementTypesDirectory extends AbstractDirectory implements Contains
         List<ElementType> types = new ArrayList<>();
         elementTypesJson.getElementTypes().forEach(type -> {
             FileUtil.getChildren(typesDir).forEach(parentFile -> {
-                if (parentFile.getName().equals(type.getType() ) && parentFile.isDirectory()) {
+                if (parentFile.getName().equals(type.getType()) && parentFile.isDirectory()) {
                     ElementType typeDir = new ElementType(parentFile);
                     types.add(typeDir);
                 }
@@ -75,9 +74,8 @@ public class ElementTypesDirectory extends AbstractDirectory implements Contains
     /**
      * Ищет и возвращает тип по названию
      *
-     * @param name      -   название типа
-     *
-     * @return          -   тип элемента
+     * @param name -   название типа
+     * @return -   тип элемента
      */
     public ElementType getElementTypeByTypeName(String name) {
         return elementTypeList

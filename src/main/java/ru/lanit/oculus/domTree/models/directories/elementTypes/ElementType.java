@@ -5,8 +5,8 @@ import ru.lanit.oculus.domTree.GsonUtil;
 import ru.lanit.oculus.domTree.Singleton;
 import ru.lanit.oculus.domTree.models.Property;
 import ru.lanit.oculus.domTree.models.directories.AbstractDirectory;
-import ru.lanit.oculus.domTree.models.directories.ContainsJson;
 import ru.lanit.oculus.domTree.models.json.TypeJson;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.List;
  * Описывает тип элемента из директории с типами
  * Содержит json с описанием типа
  */
-public class ElementType extends AbstractDirectory implements ContainsJson {
+public class ElementType extends AbstractDirectory {
 
     //json с описанием
     private TypeJson typeJson;
@@ -23,7 +23,7 @@ public class ElementType extends AbstractDirectory implements ContainsJson {
     private PropertiesDirectory props;
 
     public ElementType(File elementTypeDirectory) {
-        typeJson = GsonUtil.deserializeType(getJsonContent(elementTypeDirectory));
+        typeJson = GsonUtil.deserializeType(elementTypeDirectory);
         setDisplayedName(typeJson.getType());
         props = new PropertiesDirectory(initProps(elementTypeDirectory));
     }
@@ -47,9 +47,9 @@ public class ElementType extends AbstractDirectory implements ContainsJson {
     /**
      * Задает свойства (состояния) для типа
      *
-     * @param directory     -   директория типа элемента
-     *
-     * @return              -   список свойств элемента
+     * @param directory -   директория типа элемента
+     *                  
+     * @return -   список свойств элемента
      */
     private List<Property> initProps(File directory) {
         if (typeJson.getProperties() != null) {

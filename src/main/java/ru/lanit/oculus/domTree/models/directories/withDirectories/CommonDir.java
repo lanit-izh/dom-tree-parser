@@ -29,13 +29,8 @@ public class CommonDir extends DirectoryWithDirectories {
 
     @Override
     public void setChildDir(File parentDir) {
-        for (File file : FileUtil.getChildren(parentDir)) {
-            if (file.getName().equals(Singleton.BLOCKS_DIR_NAME) && file.isDirectory()) {
-                blocksDir = new BlocksDir(file);
-            } else if (file.getName().equals(Singleton.ELEMENTS_DIR_NAME) && file.isDirectory()) {
-                elementsDir = new ElementsDir(file);
-            }
-        }
+        blocksDir = FileUtil.initBlocksDir(parentDir);
+        elementsDir = FileUtil.initElementsDir(parentDir);
     }
 
 }
