@@ -2,13 +2,11 @@ package ru.lanit.oculus.domTree.models.directories.withDescription;
 
 import ru.lanit.oculus.domTree.FileUtil;
 import ru.lanit.oculus.domTree.GsonUtil;
-import ru.lanit.oculus.domTree.Singleton;
 import ru.lanit.oculus.domTree.models.directories.ParentDirectory;
 import ru.lanit.oculus.domTree.models.directories.elementTypes.PropertiesDirectory;
 import ru.lanit.oculus.domTree.models.directories.withDirectories.BlocksDir;
 import ru.lanit.oculus.domTree.models.directories.withDirectories.ElementsDir;
 import ru.lanit.oculus.domTree.models.json.BlockJson;
-
 import java.io.File;
 
 /**
@@ -30,7 +28,7 @@ public class BlockDir extends DirectoryWithDescription implements ParentDirector
     public BlockDir(File file) {
         super(file);
         setChildDir(file);
-        blockJson = GsonUtil.deserializeBlock(getJsonContent(file));
+        blockJson = GsonUtil.deserializeBlock(file);
         setDisplayedName(blockJson.getName());
         setAbsolutePathToDir(file);
     }
@@ -77,12 +75,7 @@ public class BlockDir extends DirectoryWithDescription implements ParentDirector
 
     @Override
     public void setChildDir(File parentDir) {
-        for (File file : FileUtil.getChildren(parentDir)) {
-            if (file.getName().equals(Singleton.BLOCKS_DIR_NAME) && file.isDirectory()) {
-                blocksDir = new BlocksDir(file);
-            } else if (file.getName().equals(Singleton.ELEMENTS_DIR_NAME) && file.isDirectory()) {
-                elementsDir = new ElementsDir(file);
-            }
-        }
+        blocksDir = FileUtil.initBlocksDir(parentDir);
+        elementsDir = FileUtil.initElementsDir(parentDir);
     }
 }

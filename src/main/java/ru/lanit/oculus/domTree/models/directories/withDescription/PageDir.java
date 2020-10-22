@@ -5,7 +5,9 @@ import ru.lanit.oculus.domTree.GsonUtil;
 import ru.lanit.oculus.domTree.Singleton;
 import ru.lanit.oculus.domTree.models.directories.ParentDirectory;
 import ru.lanit.oculus.domTree.models.directories.withDirectories.BlocksDir;
+import ru.lanit.oculus.domTree.models.directories.withDirectories.CommonDir;
 import ru.lanit.oculus.domTree.models.directories.withDirectories.ElementsDir;
+import ru.lanit.oculus.domTree.models.directories.withDirectories.PagesDir;
 import ru.lanit.oculus.domTree.models.json.PageJson;
 
 import java.io.File;
@@ -22,8 +24,9 @@ public class PageDir extends DirectoryWithDescription implements ParentDirectory
 
     public PageDir(File file) {
         super(file);
+        setAbsolutePathToDir(file.getAbsolutePath());
         setChildDir(file);
-        pageJson = GsonUtil.deserializePage(getJsonContent(file));
+        pageJson = GsonUtil.deserializePage(file);
         setDisplayedName(pageJson.getName());
     }
 
@@ -53,13 +56,8 @@ public class PageDir extends DirectoryWithDescription implements ParentDirectory
 
     @Override
     public void setChildDir(File parentDir) {
-        for (File file : FileUtil.getChildren(parentDir)) {
-            if (file.getName().equals(Singleton.BLOCKS_DIR_NAME) && file.isDirectory()) {
-                blocksDir = new BlocksDir(file);
-            } else if (file.getName().equals(Singleton.ELEMENTS_DIR_NAME) && file.isDirectory()) {
-                elementsDir = new ElementsDir(file);
-            }
-        }
+        blocksDir = FileUtil.initBlocksDir(parentDir);
+        elementsDir = FileUtil.initElementsDir(parentDir);
     }
 
 }

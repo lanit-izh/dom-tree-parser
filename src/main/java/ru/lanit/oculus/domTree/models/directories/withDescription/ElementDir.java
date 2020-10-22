@@ -20,7 +20,7 @@ public class ElementDir extends DirectoryWithDescription {
 
     public ElementDir(File file) {
         super(file);
-        elementJson = GsonUtil.deserializeElement(getJsonContent(file));
+        elementJson = GsonUtil.deserializeElement(file);
         setDisplayedName(elementJson.getName());
         setAbsolutePathToDir(file);
     }
