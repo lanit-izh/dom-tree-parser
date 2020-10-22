@@ -10,7 +10,7 @@ public class ExceptionMessages {
     public static final String FILE_NOT_FOUND = "\nФайл \"%s\" не найден в директории \"%s\"\nПроверьте правильность json-файла с описанием";
     public static final String COMMON_BLOCK_NOT_FOUND = "\nНе найден общий блок с id=\"%s\" для компонента %s";
     public static final String COMMON_ELEMENT_NOT_FOUND = "\nНе найден общий элемент с id=\"%s\" для компонента %s";
-    public static final String TYPE_NOT_FOUND = "\nДля объекта по пути \"\" не найден тип \"%s\".\nПроверьте правильность json-файла с описанием/директорию с типами \"%s\"";
+    public static final String TYPE_NOT_FOUND = "\nДля объекта по пути \"%s\" не найден тип \"%s\".\nПроверьте правильность json-файла с описанием/директорию с типами \"%s\"";
 
     public static final String TYPE_INIT_ERROR = "\nКоличество типом в json-файле с описанием типом не равно количеству директорий с типами.\nПуть до директории с типами: \"%s\"\n Проверьте правильность структуры";
 
