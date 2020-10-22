@@ -35,7 +35,7 @@ public class GsonUtil {
      */
     public static PageJson deserializePage(File directory) {
         Type type = new TypeToken<PageJson>() {}.getType();
-        return (PageJson) deserializeType(directory, type);
+        return (PageJson) deserializeObject(directory, type);
     }
 
     /**
@@ -47,7 +47,7 @@ public class GsonUtil {
      */
     public static ElementJson deserializeElement(File directory) {
         Type type = new TypeToken<ElementJson>() {}.getType();
-        return (ElementJson) deserializeType(directory, type);
+        return (ElementJson) deserializeObject(directory, type);
     }
 
     /**
@@ -59,7 +59,7 @@ public class GsonUtil {
      */
     public static BlockJson deserializeBlock(File directory) {
         Type type = new TypeToken<BlockJson>() {}.getType();
-        return (BlockJson) deserializeType(directory, type);
+        return (BlockJson) deserializeObject(directory, type);
     }
 
     /**
@@ -71,7 +71,7 @@ public class GsonUtil {
      */
     public static TypeJson deserializeType(File directory) {
         Type type = new TypeToken<TypeJson>() {}.getType();
-        return (TypeJson) deserializeType(directory, type);
+        return (TypeJson) deserializeObject(directory, type);
     }
 
     /**
@@ -83,7 +83,7 @@ public class GsonUtil {
      */
     public static ElementTypesJson deserializeTypes(File directory) {
         Type type = new TypeToken<ElementTypesJson>() {}.getType();
-        return (ElementTypesJson) deserializeType(directory, type);
+        return (ElementTypesJson) deserializeObject(directory, type);
     }
 
     /**
@@ -94,7 +94,7 @@ public class GsonUtil {
      *
      * @return                  -
      */
-    private static Object deserializeType(File directory, Type type) {
+    private static Object deserializeObject(File directory, Type type) {
         try {
             String json = FileUtil.getJsonContent(directory);
             return getGson().fromJson(json, type);

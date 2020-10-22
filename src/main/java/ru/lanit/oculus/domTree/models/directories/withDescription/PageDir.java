@@ -24,6 +24,7 @@ public class PageDir extends DirectoryWithDescription implements ParentDirectory
 
     public PageDir(File file) {
         super(file);
+        setAbsolutePathToDir(file.getAbsolutePath());
         setChildDir(file);
         pageJson = GsonUtil.deserializePage(file);
         setDisplayedName(pageJson.getName());
