@@ -1,5 +1,7 @@
 package ru.lanit.oculus.domTree.models.json;
 
+import ru.lanit.oculus.domTree.models.json.markup.Markup;
+
 import java.util.List;
 
 /**
@@ -8,6 +10,7 @@ import java.util.List;
 public class ElementJson extends DefaultJson {
 
     private String type;
+    private Markup markup;
 
     public String getType() {
         return type;
@@ -27,4 +30,11 @@ public class ElementJson extends DefaultJson {
         this.properties = properties;
     }
 
+    public Markup getMarkup() {
+        return markup;
+    }
+
+    public void setMarkup(Markup markup) {
+        this.markup = markup;
+    }
 }

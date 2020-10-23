@@ -2,6 +2,8 @@ package ru.lanit.oculus.domTree.models.json;
 
 import ru.lanit.oculus.domTree.Exceptions.RecursiveBlockException;
 import ru.lanit.oculus.domTree.models.directories.withDescription.BlockDir;
+import ru.lanit.oculus.domTree.models.json.markup.Markup;
+
 import java.util.List;
 
 /**
@@ -10,6 +12,7 @@ import java.util.List;
 public class BlockJson extends Commons {
 
     private String type;
+    private Markup markup;
 
     public String getType() {
         return type;
@@ -27,6 +30,14 @@ public class BlockJson extends Commons {
 
     public void setProperties(List<PropertyJson> properties) {
         this.properties = properties;
+    }
+
+    public Markup getMarkup() {
+        return markup;
+    }
+
+    public void setMarkup(Markup markup) {
+        this.markup = markup;
     }
 
     /**
