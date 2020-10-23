@@ -186,6 +186,9 @@ public class FileUtil {
      *
      */
     private static void addCommonObjectsToDom(RootDir rootDir) {
+        addCommonsToCommonBlock(rootDir
+                .getCommon()
+                .getBlocksDir());
         rootDir
                 .getPagesDirectory()
                 .getPageDirectoriesList()
@@ -213,6 +216,19 @@ public class FileUtil {
                     .addCommonElements(pageDir.getPageJson().getElementsFromCommons(pageDir.getAbsolutePathToDir()));
         } else {
             pageDir.setElementsDir(new ElementsDir(pageDir.getPageJson().getElementsFromCommons(pageDir.getAbsolutePathToDir())));
+        }
+    }
+
+    /**
+     * Добавляет общие блоки для блока с блоками
+     *
+     * @param blocks            -   директория с блоками
+     */
+    private static void addCommonsToCommonBlock(BlocksDir blocks) {
+        if (blocks != null) {
+            blocks
+                    .getBlocksDirList()
+                    .forEach(FileUtil::addCommonsToBlock);
         }
     }
 

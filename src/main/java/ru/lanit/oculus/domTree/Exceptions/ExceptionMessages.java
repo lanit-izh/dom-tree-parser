@@ -14,9 +14,13 @@ public class ExceptionMessages {
 
     public static final String TYPE_INIT_ERROR = "\nКоличество типом в json-файле с описанием типом не равно количеству директорий с типами.\nПуть до директории с типами: \"%s\"\n Проверьте правильность структуры";
 
-    public static final String PROPS_ARE_NOT_DESCRIBED_ERROR = "\nСвойства для типа не описаны в json-файле.\nПуть до типа: \"%s\"";
+    public static final String PROPS_ARE_NOT_DESCRIBED_ERROR = "\nСвойства для типа не описаны в json-файле.\nПуть до типа: %s";
+
+    public static final String RECURSIVE_BLOCK = "\nБлок содержит самого себя, id =\"%s\"\nПуть до типа: %s";
 
     public static final String MORE_THAT_ONE_FILE = "\nВ директории \"%s\" найдено больше, чем один файл \"%s\"";
+    public static final String MORE_THAT_ONE_COMMON_BLOCK = "\nНайдено несколько общих блоков с id=\"%s\" для компонента %s\nId для компонента должен быть уникальным";
+    public static final String MORE_THAT_ONE_COMMON_ELEMENT = "\nНайдено несколько общих элементов с id=\"%s\" для компонента %s\nId для компонента должен быть уникальным";
 
     public static final String JSON_DESERIALIZE_ERROR = "\nОшибка десериализации json-файла в директории \"%s\"\n Проверьте правильность структуры";
 
