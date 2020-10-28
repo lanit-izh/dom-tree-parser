@@ -24,6 +24,6 @@ public class ExceptionMessages {
 
     public static final String JSON_DESERIALIZE_ERROR = "\nОшибка десериализации json-файла в директории \"%s\"\n Проверьте правильность структуры";
 
-
+    public static final String ID_DUPLICATE_ERROR = "\nId=\"%s\" дублируется.\nПроверьте id в json-файлах с описанием:\nПуть до первой директории: %s\nПуть до второй директории: %s";
 
 }

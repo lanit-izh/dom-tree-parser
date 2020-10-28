@@ -1,10 +1,7 @@
 package ru.lanit.oculus.domTree;
 
 import org.apache.commons.io.IOUtils;
-import ru.lanit.oculus.domTree.Exceptions.FileNotFoundCustomException;
-import ru.lanit.oculus.domTree.Exceptions.JsonNotFoundException;
-import ru.lanit.oculus.domTree.Exceptions.MoreThatOneFileException;
-import ru.lanit.oculus.domTree.Exceptions.PngNotFoundException;
+import ru.lanit.oculus.domTree.Exceptions.*;
 import ru.lanit.oculus.domTree.models.Property;
 import ru.lanit.oculus.domTree.models.directories.elementTypes.ElementTypeDirectory;
 import ru.lanit.oculus.domTree.models.directories.elementTypes.PropertiesDirectory;
@@ -32,6 +29,7 @@ public class FileUtil {
     private static String project_path_string = "your path";
     private static RootDir rootDirectory;
     public static String FILE_SEPARATOR;
+    private static Map<String, String> listOfIds;
 
     public static RootDir getRootDirectory() {
         return rootDirectory;
@@ -41,7 +39,6 @@ public class FileUtil {
      * Устанавливает путь до директории, которая содержит рут-директорию
      *
      * @param path -   путь
-     *
      */
     public static void setProjectPath(String path) {
         if (System.getProperty("os.name").contains("indows")) {
@@ -62,7 +59,6 @@ public class FileUtil {
 
     /**
      * Парсит root-директорию и сеттит в поле
-     *
      */
     public static void parseRootDir() {
         String pathToRootDir = project_path_string + FILE_SEPARATOR + Singleton.ROOT_DIR_NAME;
@@ -70,13 +66,13 @@ public class FileUtil {
         addCommonObjectsToDom(rootDirectory);
         setPropsForPages(rootDirectory.getPagesDirectory());
         setXpathForObjects(rootDirectory);
+        listOfIds.clear();
     }
 
     /**
      * Возвращает содержимое json-файла
      *
      * @param directory -   директория, содержащая json
-     *
      * @return -   содержимое файла
      */
     public static String getJsonContent(File directory) {
@@ -97,7 +93,6 @@ public class FileUtil {
      *
      * @param directory -   директория для поиска
      * @param extension -   расширение
-     *
      * @return -   найденный файл или null
      */
     private static File findFileByExtension(File directory, String extension) {
@@ -110,7 +105,6 @@ public class FileUtil {
      * @param directory -   директория для поиска
      * @param fileName  -   названия файла (без расширения)
      * @param extension -   расширение (без точки)
-     *
      * @return -   найденный файл
      */
     public static File findFileByFullName(File directory, String fileName, String extension) {
@@ -138,13 +132,14 @@ public class FileUtil {
      * Парсит директории с элементами
      *
      * @param parentDir -   директория, содержащая директории с элементами
-     *
      * @return -   лист директорий элементов
      */
     public static List<ElementDir> parseElementsDir(File parentDir) {
         List<ElementDir> elements = new ArrayList<>();
         for (File file : getChildren(parentDir)) {
-            elements.add(new ElementDir(file));
+            ElementDir element = new ElementDir(file);
+            elements.add(element);
+            saveId(element.getElementJson().getId(), file.getAbsolutePath());
         }
         return elements;
     }
@@ -153,13 +148,14 @@ public class FileUtil {
      * Парсит директории с блоками
      *
      * @param parentDir -   директория, содержащая директории с блоками
-     *
      * @return -   лист директорий блоков
      */
     public static List<BlockDir> parseBlocksDir(File parentDir) {
         List<BlockDir> blocks = new ArrayList<>();
         for (File file : getChildren(parentDir)) {
-            blocks.add(new BlockDir(file));
+            BlockDir block = new BlockDir(file);
+            blocks.add(block);
+            saveId(block.getBlockJson().getId(), file.getAbsolutePath());
         }
         return blocks;
     }
@@ -168,13 +164,14 @@ public class FileUtil {
      * Парсит директории со страницами
      *
      * @param parentDir -   директория, содержащая директориии со страницами
-     *
      * @return -   лист директорий страниц
      */
     public static List<PageDir> parsePagesDir(File parentDir) {
         List<PageDir> pages = new ArrayList<>();
         for (File file : getChildren(parentDir)) {
-            pages.add(new PageDir(file));
+            PageDir page = new PageDir(file);
+            pages.add(page);
+            saveId(page.getPageJson().getId(), file.getAbsolutePath());
         }
         return pages;
     }
@@ -183,7 +180,6 @@ public class FileUtil {
      * Добавляет общие блоки и элементы из json как виртуальные директории
      *
      * @param rootDir -   root-директория
-     *
      */
     private static void addCommonObjectsToDom(RootDir rootDir) {
         addCommonsToCommonBlock(rootDir
@@ -199,30 +195,40 @@ public class FileUtil {
      * Добавялет общие блоки и элементы к странице
      *
      * @param pageDir -   страница
-     *
      */
     private static void addCommonsToPage(PageDir pageDir) {
+        List<BlockDir> commonBlocks = pageDir
+                .getPageJson()
+                .getBlocksFromCommons(pageDir.getAbsolutePathToDir());
         if (pageDir.getBlocksDir() != null) {
             pageDir
                     .getBlocksDir()
-                    .addCommonBlocks(pageDir.getPageJson().getBlocksFromCommons(pageDir.getAbsolutePathToDir()));
-            pageDir.getBlocksDir().getBlocksDirList().forEach(FileUtil::addCommonsToBlock);
-        } else {
-            pageDir.setBlocksDir(new BlocksDir(pageDir.getPageJson().getBlocksFromCommons(pageDir.getAbsolutePathToDir())));
-        }
-        if (pageDir.getElementsDir() != null) {
+                    .addCommonBlocks(commonBlocks);
             pageDir
-                    .getElementsDir()
-                    .addCommonElements(pageDir.getPageJson().getElementsFromCommons(pageDir.getAbsolutePathToDir()));
-        } else {
-            pageDir.setElementsDir(new ElementsDir(pageDir.getPageJson().getElementsFromCommons(pageDir.getAbsolutePathToDir())));
+                    .getBlocksDir()
+                    .getBlocksDirList()
+                    .forEach(FileUtil::addCommonsToBlock);
+        } else if (commonBlocks.size() > 0) {
+            pageDir.setBlocksDir(new BlocksDir(commonBlocks));
+        }
+        List<ElementDir> commonElements = pageDir
+                .getPageJson()
+                .getElementsFromCommons(pageDir.getAbsolutePathToDir());
+        if (commonElements.size() > 0) {
+            if (pageDir.getElementsDir() != null) {
+                pageDir
+                        .getElementsDir()
+                        .addCommonElements(commonElements);
+            } else {
+                pageDir.setElementsDir(new ElementsDir(commonElements));
+            }
         }
     }
 
     /**
      * Добавляет общие блоки для блока с блоками
      *
-     * @param blocks            -   директория с блоками
+     * @param blocks -   директория с блоками
      */
     private static void addCommonsToCommonBlock(BlocksDir blocks) {
         if (blocks != null) {
@@ -236,31 +242,40 @@ public class FileUtil {
      * Добавялет общие блоки и элементы в блок
      *
      * @param blockDir -   блок
-     *
      */
     private static void addCommonsToBlock(BlockDir blockDir) {
-        if (blockDir.getBlocksDir() != null) {
-            blockDir
-                    .getBlocksDir()
-                    .addCommonBlocks(blockDir.getBlockJson().getBlocksFromCommons(blockDir.getAbsolutePathToDir()));
-        } else {
-            blockDir.setBlocksDir(new BlocksDir(blockDir.getBlockJson().getBlocksFromCommons(blockDir.getAbsolutePathToDir())));
+        List<BlockDir> commonBlocks = blockDir
+                .getBlockJson()
+                .getBlocksFromCommons(blockDir.getAbsolutePathToDir());
+        if (commonBlocks.size() > 0) {
+            if (blockDir.getBlocksDir() != null) {
+                blockDir
+                        .getBlocksDir()
+                        .addCommonBlocks(commonBlocks);
+            } else {
+                blockDir
+                        .setBlocksDir(new BlocksDir(commonBlocks));
+            }
         }
-        if (blockDir.getElementsDir() != null) {
-            blockDir
-                    .getElementsDir()
-                    .addCommonElements(blockDir.getBlockJson().getElementsFromCommons(blockDir.getAbsolutePathToDir()));
-        } else {
-            blockDir.setElementsDir(new ElementsDir(blockDir.getBlockJson().getElementsFromCommons(blockDir.getAbsolutePathToDir())));
+        List<ElementDir> commonElements = blockDir
+                .getBlockJson()
+                .getElementsFromCommons(blockDir.getAbsolutePathToDir());
+        if (commonElements.size() > 0) {
+            if (blockDir.getElementsDir() != null) {
+                blockDir
+                        .getElementsDir()
+                        .addCommonElements(commonElements);
+            } else {
+                blockDir.setElementsDir(new ElementsDir(commonElements));
+            }
         }
     }
 
     /**
      * Возвращает все вложенные в директорию файлы
      *
-     * @param parentDir     -   родительская директория
-     *
-     * @return              -   вложенные файлы
+     * @param parentDir -   родительская директория
+     * @return -   вложенные файлы
      */
     public static List<File> getChildren(File parentDir) {
         List<File> childrenFiles = new ArrayList<>();
@@ -273,8 +288,7 @@ public class FileUtil {
     /**
      * Добавляет к страницам,блокам и элементам xpath'ы
      *
-     * @param rootDirectory     -   root-директория
-     *
+     * @param rootDirectory -   root-директория
      */
     private static void setXpathForObjects(RootDir rootDirectory) {
         rootDirectory
@@ -290,9 +304,8 @@ public class FileUtil {
     /**
      * Добавляет к блокам xpath'ы
      *
-     * @param prefix        -   префикс (xpath парент-объектов: страниц/блоков)
-     * @param blocksDir     -   лист с блоками
-     *
+     * @param prefix    -   префикс (xpath парент-объектов: страниц/блоков)
+     * @param blocksDir -   лист с блоками
      */
     private static void setXpathForBlocks(String prefix, BlocksDir blocksDir) {
         if (blocksDir != null) {
@@ -311,9 +324,8 @@ public class FileUtil {
     /**
      * Добавляет к элементам xpath'ы
      *
-     * @param prefix            -   префикс (xpath парент-объектов: страниц/блоков)
-     * @param elementsDir       -   директорий с элементами
-     *
+     * @param prefix      -   префикс (xpath парент-объектов: страниц/блоков)
+     * @param elementsDir -   директорий с элементами
      */
     private static void setXpathForElements(String prefix, ElementsDir elementsDir) {
         if (elementsDir != null) {
@@ -329,9 +341,8 @@ public class FileUtil {
     /**
      * Добавляет к свойствам(состояниям) xpath'ы
      *
-     * @param prefix                -   префикс (xpath парент-объектов: страниц/блоков)
-     * @param propertiesDirectory   -   директория со свойствами
-     *
+     * @param prefix              -   префикс (xpath парент-объектов: страниц/блоков)
+     * @param propertiesDirectory -   директория со свойствами
      */
     private static void setXpathForProps(String prefix, PropertiesDirectory propertiesDirectory) {
         if (propertiesDirectory != null) {
@@ -346,8 +357,7 @@ public class FileUtil {
     /**
      * Задает свойства для блока
      *
-     * @param pages     -   директория со страницами
-     *
+     * @param pages -   директория со страницами
      */
     private static void setPropsForPages(PagesDir pages) {
         pages
@@ -367,8 +377,7 @@ public class FileUtil {
     /**
      * Задает свойства для блока
      *
-     * @param block     -   директория с блоком
-     *
+     * @param block -   директория с блоком
      */
     private static void setPropsForBlock(BlockDir block) {
         BlockJson json = block.getBlockJson();
@@ -397,8 +406,7 @@ public class FileUtil {
     /**
      * Задает свойства для элемента
      *
-     * @param element   -   директория с элементом
-     *
+     * @param element -   директория с элементом
      */
     private static void setPropsForElement(ElementDir element) {
         ElementJson json = element.getElementJson();
@@ -419,10 +427,10 @@ public class FileUtil {
      * @param typeName      -   тип элемента/блока
      * @param jsonProps     -   свойства элемента/блока из его json-файла
      * @param directoryPath -   путь до директории элемента/блока
-     *
      * @return -   переопределенные свойства
      */
-    private static List<Property> initAndOverrideProps(String typeName, List<PropertyJson> jsonProps, String directoryPath) {
+    private static List<Property> initAndOverrideProps(String typeName, List<PropertyJson> jsonProps, String
+            directoryPath) {
         List<Property> overrideProps = new ArrayList<>();
         List<Property> defaultProps = rootDirectory
                 .getElementTypesDirectory()
@@ -454,7 +462,6 @@ public class FileUtil {
      * Ищет в директории png-изображение
      *
      * @param directory -   директория
-     *
      * @return -   путь до изображения
      */
     public static String findImageAndGetPath(File directory) {
@@ -472,7 +479,6 @@ public class FileUtil {
      *
      * @param parentDir -   родительская директория
      * @param dirName   -   директория для поиска
-     *
      * @return -   директория
      */
     public static File findDirectoryByName(File parentDir, String dirName) {
@@ -489,7 +495,6 @@ public class FileUtil {
      *
      * @param parentDir -   родительская директория
      * @param dirName   -   директория для поиска
-     *
      * @return -   директория
      */
     public static File findDirectoryByNameAndGetNotNull(File parentDir, String dirName) {
@@ -503,9 +508,8 @@ public class FileUtil {
     /**
      * Ищет и возвращает директорию с блоком
      *
-     * @param parentDir     -   родительская директория
-     *
-     * @return              -   директория блока
+     * @param parentDir -   родительская директория
+     * @return -   директория блока
      */
     public static BlocksDir initBlocksDir(File parentDir) {
         return new BlocksDir(findDirectoryByName(parentDir, Singleton.BLOCKS_DIR_NAME));
@@ -514,9 +518,8 @@ public class FileUtil {
     /**
      * Ищет и возвращает директорию с элементом
      *
-     * @param parentDir     -   родительская директория
-     *
-     * @return              -   директория элемента
+     * @param parentDir -   родительская директория
+     * @return -   директория элемента
      */
     public static ElementsDir initElementsDir(File parentDir) {
         return new ElementsDir(findDirectoryByName(parentDir, Singleton.ELEMENTS_DIR_NAME));
@@ -525,12 +528,29 @@ public class FileUtil {
     /**
      * Ищет и возвращает директорию со страницей
      *
-     * @param parentDir     -   родительская директория
-     *
-     * @return              -   директория страницы
+     * @param parentDir -   родительская директория
+     * @return -   директория страницы
      */
     public static PagesDir initPagesDir(File parentDir) {
         return new PagesDir(findDirectoryByName(parentDir, Singleton.PAGES_DIR_NAME));
     }
 
+    /**
+     * Сохраняет id и путь до компонента
+     * Если такой id уже есть - бросает исключение
+     *
+     * @param id    -   id-компонента
+     * @param path  -   путь до компонента
+     */
+    private static void saveId(String id, String path) {
+        if (listOfIds == null) {
+            listOfIds = new HashMap<>();
+        }
+        boolean isIdDuplicate = listOfIds.containsKey(id);
+        if (isIdDuplicate) {
+            throw new IdDuplicateException(id, listOfIds.get(id), path);
+        }
+        listOfIds.put(id, path);
+    }
+    
 }
