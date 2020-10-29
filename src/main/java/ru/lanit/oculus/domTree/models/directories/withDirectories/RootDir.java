@@ -34,9 +34,15 @@ public class RootDir extends DirectoryWithDirectories {
 
     @Override
     public void setChildDir(File parentDir) {
-        common = new CommonDir(FileUtil.findDirectoryByName(parentDir, Singleton.COMMON_DIR_NAME));
+        File commonDir = FileUtil.findDirectoryByName(parentDir, Singleton.COMMON_DIR_NAME);
+        if (commonDir != null) {
+            common = new CommonDir(commonDir);
+        }
+        File elementTypesDir = FileUtil.findDirectoryByName(parentDir, Singleton.TYPES_DIR_NAME);
+        if (elementTypesDir != null) {
+            elementTypesDirectory = new ElementTypesDirectory(elementTypesDir);
+        }
         pagesDirectory = FileUtil.initPagesDir(parentDir);
-        elementTypesDirectory = new ElementTypesDirectory(FileUtil.findDirectoryByName(parentDir, Singleton.TYPES_DIR_NAME));
     }
 
 }
