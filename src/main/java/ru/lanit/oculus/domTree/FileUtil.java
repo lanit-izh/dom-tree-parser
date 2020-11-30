@@ -513,7 +513,12 @@ public class FileUtil {
      * @return -   директория блока
      */
     public static BlocksDir initBlocksDir(File parentDir) {
-        return new BlocksDir(findDirectoryByName(parentDir, Singleton.BLOCKS_DIR_NAME));
+        File directoryOrNull = findDirectoryByName(parentDir, Singleton.BLOCKS_DIR_NAME);
+        if (directoryOrNull != null) {
+            return new BlocksDir(findDirectoryByName(parentDir, Singleton.BLOCKS_DIR_NAME));
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -523,7 +528,12 @@ public class FileUtil {
      * @return -   директория элемента
      */
     public static ElementsDir initElementsDir(File parentDir) {
-        return new ElementsDir(findDirectoryByName(parentDir, Singleton.ELEMENTS_DIR_NAME));
+        File directoryOrNull = findDirectoryByName(parentDir, Singleton.ELEMENTS_DIR_NAME);
+        if (directoryOrNull != null) {
+            return new ElementsDir(findDirectoryByName(parentDir, Singleton.ELEMENTS_DIR_NAME));
+        } else {
+            return null;
+        }
     }
 
     /**
