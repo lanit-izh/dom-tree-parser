@@ -6,7 +6,7 @@
 
     <groupId>ru.lanit.oculus</groupId>
     <artifactId>dom-tree-parser</artifactId>
-    <version>1.3.2</version>
+    <version>1.3.3</version>
     <packaging>jar</packaging>
     <build>
         <plugins>

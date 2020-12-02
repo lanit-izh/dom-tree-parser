@@ -13,6 +13,7 @@ public class BlockJson extends Commons {
 
     private String type;
     private Markup markup;
+    private String use_mask="false";
 
     public String getType() {
         return type;
@@ -38,6 +39,14 @@ public class BlockJson extends Commons {
 
     public void setMarkup(Markup markup) {
         this.markup = markup;
+    }
+
+    public String getUse_mask() {
+        return use_mask;
+    }
+
+    public void setUse_mask(String use_mask) {
+        this.use_mask = use_mask;
     }
 
     /**
